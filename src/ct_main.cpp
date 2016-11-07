@@ -19,7 +19,7 @@ typedef unsigned char uchar;
 
 
 template<class type>
-double tester(type *ct, size_t N=20, bool verbose=false) {
+double tester(type *ct, size_t N=7, bool verbose=false) {
 	double total_time, time;
 	size_t count, degree, node, ith_child, next_node;
 	char label;
@@ -52,7 +52,7 @@ double tester(type *ct, size_t N=20, bool verbose=false) {
 		count++;
 	}
 	cout << "[TEST] Total time (" <<  N << " queries): " << total_time << endl;
-	double average_time = (double)total_time / (double)N;
+	double average_time = total_time / N;
 	//return average_time;
 	return total_time;
 }
@@ -70,7 +70,7 @@ void print_usage() {
 	cout << "\tprefix_file.ascii and prefix_file.letts must be exists." << endl << endl;
 }
 
-void replace_null(string seq, char c, size_t N); 
+//void replace_null(string seq, char c, size_t N); 
 int main(int argc, char *argv[]) {
 	char *name_bp, *name_letts, *name_size, *type_wt;
 
@@ -104,7 +104,7 @@ int main(int argc, char *argv[]) {
 }
 
 void print_output(string structure, char *name_letts, bool check_data, size_t total_nodes, size_t bp_size) {
-	cout << "########## TEST on " << name_letts << " ##########" << endl;
+	cout << "########## TEST [" << structure << "] on [" << name_letts << "] ##########" << endl;
 	cout << "[DEBUG] Check data: " << check_data << endl;
 	cout << "[Tree Info] Total nodes: " << total_nodes << endl;
 	cout << "[Tree Info] Size parentheses: " << bp_size << endl;
@@ -152,7 +152,7 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 	
 	//cout << "[DEBUG][prepare_data] Creation Cardinal Tree Successful." << endl;
 	string name;
-	size_t time;
+	double time;
 	if (strcmp(type_wt, "gmr") == 0) {
 		name = "Golynski";
 		cardinal_tree<wt_gmr<>> ct(letts2, &b, &info);
@@ -164,7 +164,7 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size());
 		time = tester(&ct);
 	} else if (strcmp(type_wt, "wth") == 0) {
-		name = "Balanced Wavelet Tree";
+		name = "Huffman	Wavelet Tree";
 		cardinal_tree<wt_huff<>> ct(letts2, &b, &info);
 		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size());
 		time = tester(&ct);
@@ -182,7 +182,7 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 
 	//cout << "[DEBUG] NAME: " << name << endl;
 
-	cout << "[TEST] " << " Average Time: " << time/20 << "[us]" << endl;
+	cout << "[TEST]" << " Average Time: " << time/20 << "[us]" << endl;
 }
 
 
