@@ -2,6 +2,7 @@
 #include <sdsl/bp_support.hpp>
 #include <sdsl/wavelet_trees.hpp>
 #include <vector>
+#include <set>
 #include "read_utils.hpp"
 
 using namespace std;
@@ -14,6 +15,16 @@ bool check_data(bit_vector *b, string& letts, size_t total_nodes) {
 	size_t total_symbols = total_nodes - 1;
 	if (b->size() == total_nodes * 2 && letts.size() == total_symbols) return true;
 	return false;
+}
+
+size_t vocabulary_size(string& letts) {
+	size_t count = 0;
+	set<char> voc;
+	for (size_t i=0; i<letts.size(); i++) {
+		voc.insert(letts[i]);
+	}
+	count = voc.size();
+	return count;
 }
 
 // read_letts: Store the symbols in letts and return the number of nodes.

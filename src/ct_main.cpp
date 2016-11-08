@@ -19,8 +19,10 @@ typedef unsigned char uchar;
 
 
 template<class type>
-double tester(type *ct, size_t N=7, bool verbose=false) {
-	double total_time, time;
+double tester(type *ct, size_t N=20, bool verbose=false) {
+	//double total_time, time;
+	chrono::high_resolution_clock::time_point start_time, end_time;
+	chrono::duration<double> total_time;
 	size_t count, degree, node, ith_child, next_node;
 	char label;
 	count = degree = 0;
@@ -40,9 +42,13 @@ double tester(type *ct, size_t N=7, bool verbose=false) {
 		if (verbose) cout << "[DEBUG] New label: " << label << endl;
 		if (verbose) cout << "[DEBUG] ct->label_child(" << node << ", '" << label << "'): " << endl << endl; 
 
-		time = getTime();
+		//time = getTime();
+		start_time = chrono::high_resolution_clock::now();
 		next_node = ct->label_child(node, label);
-		total_time += (getTime() - time);
+		end_time = chrono::high_resolution_clock::now();
+		//cout << "microseconds: " << chrono::duration_cast<chrono::microseconds>(end_time - start_time).count()/1000000. << endl;
+		//total_time += (getTime() - time);
+		total_time += end_time - start_time;
 
 		node = next_node;
 		if (node > ct->count_nodes()*2) degree = 0;
@@ -51,10 +57,14 @@ double tester(type *ct, size_t N=7, bool verbose=false) {
 
 		count++;
 	}
-	cout << "[TEST] Total time (" <<  N << " queries): " << total_time << endl;
-	double average_time = total_time / N;
+	//cout << "[TEST] Total time (" <<  N << " queries): " << total_time << endl;
+	//cout << "[CHRONO] " << chrono::duration_cast<chrono::microseconds>(total_time).count() << "ms" << endl;
+	//cout << "[CHRONO] " << chrono::duration_cast<chrono::nanoseconds>(total_time).count() << "ns" << endl;
+	double time = chrono::duration_cast<chrono::microseconds>(total_time).count();
+	//double average_time = total_time / N;
 	//return average_time;
-	return total_time;
+	//return total_time;
+	return time/N;
 }
 
 int main_test();
@@ -103,16 +113,18 @@ int main(int argc, char *argv[]) {
 	return 0;
 }
 
-void print_output(string structure, char *name_letts, bool check_data, size_t total_nodes, size_t bp_size) {
-	cout << "########## TEST [" << structure << "] on [" << name_letts << "] ##########" << endl;
-	cout << "[DEBUG] Check data: " << check_data << endl;
-	cout << "[Tree Info] Total nodes: " << total_nodes << endl;
-	cout << "[Tree Info] Size parentheses: " << bp_size << endl;
-
+void print_output(string structure, char *name_letts, bool check_data, size_t total_nodes, size_t bp_size, double time, size_t voc_size) {
+	//cout << "########## TEST [" << structure << "] on [" << name_letts << "] ##########" << endl;
+	//cout << "[DEBUG] Check data: " << check_data << endl;
+	//cout << "[Tree Info] Total nodes: " << total_nodes << endl;
+	//cout << "[Tree Info] Size parentheses: " << bp_size << endl;
+	//cout << "[TEST]" << " Average Time: " << time << "[us]" << endl;
+	cout << "[" << name_letts << "][" << structure << "][Time][" << time << "][microseconds]" << "[Voc Size][" << voc_size << "]" << endl;
 }
 
 void process_data(char *name_bp, char *name_letts, char *type_wt) {
 	char *bp, *letts;
+	size_t voc_size;
 	// Get Data.
 	// Read total_nodes and symbols.
 	uint total_nodes = read_letts(name_letts, &letts);
@@ -143,6 +155,7 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 	string letts2;
 	letts2.reserve(total_nodes);
 	letts2 = letts;
+	voc_size = vocabulary_size(letts2);
 	//cout << "[DEBUG][prepare_data] letts 0-11: "; for (size_t i=0; i<11; i++) cout << letts2[i] << " "; cout << endl;
 	//cout << "[DEBUG][prepare_data] letts.capacity(): " << letts2.capacity() << endl;
 	//cout << "[DEBUG][prepare_data] letts.size(): " << letts2.size() << endl;
@@ -156,33 +169,32 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 	if (strcmp(type_wt, "gmr") == 0) {
 		name = "Golynski";
 		cardinal_tree<wt_gmr<>> ct(letts2, &b, &info);
-		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size());
 		time = tester(&ct);
+		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size(), time, voc_size);
 	} else if (strcmp(type_wt, "wt") == 0) {
 		name = "Balanced Wavelet Tree";
 		cardinal_tree<wt_blcd<>> ct(letts2, &b, &info);
-		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size());
 		time = tester(&ct);
+		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size(), time, voc_size);
 	} else if (strcmp(type_wt, "wth") == 0) {
-		name = "Huffman	Wavelet Tree";
+		name = "Huffman Wavelet Tree";
 		cardinal_tree<wt_huff<>> ct(letts2, &b, &info);
-		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size());
 		time = tester(&ct);
+		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size(), time, voc_size);
 	} else if (strcmp(type_wt, "bin") == 0) {
 		name = "Binary Search";
 		cardinal_tree_bs ct(letts2, &b, &info);
-		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size());
 		time = tester(&ct);
+		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size(), time, voc_size);
 	} else if (strcmp(type_wt, "ap") == 0) {
 		name = "Alphabet Partitioning";
 		cardinal_tree<wt_gmr<>> ct(letts2, &b, &info);
-		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size());
 		time = tester(&ct);
+		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size(), time, voc_size);
 	}
 
 	//cout << "[DEBUG] NAME: " << name << endl;
 
-	cout << "[TEST]" << " Average Time: " << time/20 << "[us]" << endl;
 }
 
 

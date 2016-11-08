@@ -13,6 +13,9 @@ typedef unsigned char uchar;
 // Check all data read.
 extern bool check_data(bit_vector *b, string& letts, size_t total_nodes);
 
+// vocabulary_size: Return the count of distinc characters.
+extern size_t vocabulary_size(string& letts);
+
 // read_letts: read a file that contains symbols and number of nodes.
 extern uint read_letts(char *name_file, char **letts); 
 
