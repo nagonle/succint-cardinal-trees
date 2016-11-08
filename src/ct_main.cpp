@@ -19,7 +19,7 @@ typedef unsigned char uchar;
 
 
 template<class type>
-double tester(type *ct, size_t N=20, bool verbose=false) {
+double tester(type *ct, size_t N=4, bool verbose=false) {
 	//double total_time, time;
 	chrono::high_resolution_clock::time_point start_time, end_time;
 	chrono::duration<double> total_time;
@@ -39,7 +39,7 @@ double tester(type *ct, size_t N=20, bool verbose=false) {
 		if (verbose) cout << "[DEBUG] node: " << node << " label: " << label << " Preorder: " << ct->preorder(node) << endl;
 		if (verbose) cout << "[DEBUG] degree: " << ct->degree(node) << endl;
 		label = ct->label(node, ith_child);
-		if (verbose) cout << "[DEBUG] New label: " << label << endl;
+		if (verbose) cout << "[DEBUG] New label: " << label << " to int: " << (int)label << endl;
 		if (verbose) cout << "[DEBUG] ct->label_child(" << node << ", '" << label << "'): " << endl << endl; 
 
 		//time = getTime();
@@ -51,9 +51,9 @@ double tester(type *ct, size_t N=20, bool verbose=false) {
 		total_time += end_time - start_time;
 
 		node = next_node;
-		if (node > ct->count_nodes()*2) degree = 0;
-		else degree = ct->degree(node);
-		//degree = ct->degree(node);
+		//if (node > ct->count_nodes()*2) degree = 0;
+		//else degree = ct->degree(node);
+		degree = ct->degree(node);
 
 		count++;
 	}
@@ -123,7 +123,8 @@ void print_output(string structure, char *name_letts, bool check_data, size_t to
 }
 
 void process_data(char *name_bp, char *name_letts, char *type_wt) {
-	char *bp, *letts;
+	char *bp;
+	uchar *letts;
 	size_t voc_size;
 	// Get Data.
 	// Read total_nodes and symbols.
@@ -138,6 +139,10 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 
 	bit_vector b(total_nodes*2);
 	bp_string_to_bit_vector(bp, &b);
+	cout << "CHECK BP: ";
+	if (check_balanced(&b) == true) cout << "OK" << endl;
+	else cout << "FAILED" << endl;
+	
 	//cout << "[DEBUG][prepare_data] bit_vector.size(): " << b.size() << endl;
 	//cout << "[DEBUG][prepare_data] Check balanced parentheses: " << check_balanced(bp) << endl << endl;
 
@@ -154,8 +159,9 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 
 	string letts2;
 	letts2.reserve(total_nodes);
-	letts2 = letts;
+	letts2 = reinterpret_cast<char*>(letts);
 	voc_size = vocabulary_size(letts2);
+	//for (size_t i=0; i<209; i++) cout << i << ": " << (int)letts2[i] << endl;
 	//cout << "[DEBUG][prepare_data] letts 0-11: "; for (size_t i=0; i<11; i++) cout << letts2[i] << " "; cout << endl;
 	//cout << "[DEBUG][prepare_data] letts.capacity(): " << letts2.capacity() << endl;
 	//cout << "[DEBUG][prepare_data] letts.size(): " << letts2.size() << endl;

@@ -28,8 +28,26 @@ size_t vocabulary_size(string& letts) {
 }
 
 // read_letts: Store the symbols in letts and return the number of nodes.
-uint read_letts(char *name_file, char **letts) {
-	uint nodes, tmp, symbols;
+uint read_letts(char *name_file, uchar **letts) {
+	uint nodes, symbols;
+	char tmp[2];
+	ifstream in;
+	in.open(name_file, ios::in | ios::binary);
+	// Read total nodes
+	in.read((char*)&nodes, sizeof(uint));
+	symbols = nodes - 1;
+	// Read zero separator
+	in.read((char*)&tmp, sizeof(char));
+	(*letts) = (uchar*)malloc(symbols+1);
+	in.read((char*)letts, symbols);
+	in.close();
+	(*letts)[symbols] = 0;
+
+	return nodes;
+}
+uint read_letts2(char *name_file, char **letts) {
+	uint nodes, symbols;
+	char tmp[2];
 	ifstream in;
 	in.open(name_file, ios::in | ios::binary);
 	// Read total nodes
@@ -58,11 +76,11 @@ void read_bp(char* name_file, char **bp, uint nodes) {
 }
 
 // check_balanced: return true if bp contain a balanced sequence of parentheses.
-bool check_balanced(char *bp) {
+bool check_balanced(bit_vector *bp) {
 	stack<char> bp_stack;
-	size_t N = strlen(bp);
+	size_t N = bp->size(); 
 	for (size_t i=0; i<N; i++) {
-		if (bp[i] == '(') bp_stack.push('1');
+		if ((int)bp[i] == 1) bp_stack.push('1');
 		else
 			if (bp_stack.empty() == false) bp_stack.pop();
 			else return false;
@@ -99,7 +117,7 @@ bool exists(string seq, char c, size_t N) {
 }
 
 // replace_null: Search in seq occurrences for NULL character and replace it for char c.
-void replace_null(char *seq, char c, size_t N) {
+void replace_null(uchar *seq, char c, size_t N) {
 	for (size_t i=0; i<N; i++) {
 		if (seq[i] == 0) {
 			seq[i] = c;
@@ -108,3 +126,11 @@ void replace_null(char *seq, char c, size_t N) {
 	seq[N] = '\0';
 }
 
+void replace_null2(char *seq, char c, size_t N) {
+	for (size_t i=0; i<N; i++) {
+		if (seq[i] == 0) {
+			seq[i] = c;
+		}
+	}
+	seq[N] = '\0';
+}
