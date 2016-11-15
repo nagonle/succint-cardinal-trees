@@ -43,6 +43,20 @@ void test_degree(TYPE * ct) {
 	}
 }
 
+void brute_test_degree(bit_vector *ct) {
+	size_t node = 0, degree = 0;
+	for (size_t i=1; i<ct->size(); i++) {
+		if ((*ct)[i] != 1u){
+			cout << "[Node " << node << "] degree(" << i-degree << "):" << degree << endl;
+			node++;
+			degree = 0;
+		} else {
+			degree++;
+		}
+		
+	}
+}
+
 template<class TYPE>
 void test_parent(TYPE * ct) {
 	size_t x;
@@ -57,13 +71,15 @@ template<class TYPE>
 void test_child(TYPE * ct) {
 	size_t x;
 	for(size_t j=0; j<ct->degree(1); j++) {
-			cout << "[Node " << 0 << "] child(" << 1 << ", " << j+1 << "): " << ct->preorder(ct->child(1, j+1)) << endl;
+			//cout << "[Node " << 0 << "] child(" << 1 << ", " << j+1 << "): " << ct->preorder(ct->child(1, j+1)) << endl;
+			cout << "[Node " << 0 << "] child(" << 1 << ", " << j+1 << "): " << ct->child(1, j+1) << endl;
 	}
 
 	for (size_t i=1; i<ct->count_nodes(); i++) {
 		x = ct->tree_select0(i) + 1;
 		for(size_t j=0; j<ct->degree(x); j++) {
-			cout << "[Node " << i << "] child(" << x << ", " << j+1 << "): " << ct->preorder(ct->child(x, j+1)) << endl;
+			//cout << "[Node " << i << "] child(" << x << ", " << j+1 << "): " << ct->preorder(ct->child(x, j+1)) << endl;
+			cout << "[Node " << i << "] child(" << x << ", " << j+1 << "): " << ct->child(x, j+1) << endl;
 		}
 	}
 }

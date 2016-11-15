@@ -13,7 +13,8 @@ typedef unsigned char uchar;
 // Check all data read.
 bool check_data(bit_vector *b, string& letts, size_t total_nodes) {
 	size_t total_symbols = total_nodes - 1;
-	if (b->size() == total_nodes * 2 && letts.size() == total_symbols) return true;
+	bool balanced = check_balanced(b);
+	if (balanced == true && b->size() == total_nodes * 2 && letts.size() == total_symbols) return true;
 	return false;
 }
 
@@ -39,7 +40,7 @@ uint read_letts(char *name_file, uchar **letts) {
 	// Read zero separator
 	in.read((char*)&tmp, sizeof(char));
 	(*letts) = (uchar*)malloc(symbols+1);
-	in.read((char*)letts, symbols);
+	in.read((char*)*letts, symbols);
 	in.close();
 	(*letts)[symbols] = 0;
 
@@ -80,7 +81,7 @@ bool check_balanced(bit_vector *bp) {
 	stack<char> bp_stack;
 	size_t N = bp->size(); 
 	for (size_t i=0; i<N; i++) {
-		if ((int)bp[i] == 1) bp_stack.push('1');
+		if ((*bp)[i] == 1u) bp_stack.push('1');
 		else
 			if (bp_stack.empty() == false) bp_stack.pop();
 			else return false;

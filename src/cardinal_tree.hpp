@@ -6,6 +6,9 @@
 #include <sdsl/wavelet_trees.hpp>
 #include <vector>
 
+//#define t_sml_blk 2018475u
+#define t_sml_blk 512u
+#define t_med_deg 128u
 using namespace std;
 using namespace sdsl;
 
@@ -15,11 +18,14 @@ template <class A_Type> class cardinal_tree
 {
 	private:
 		A_Type *letts; // symbol sequence.
-		bp_support_sada<256u, 32u, rank_support_v5<0>, bit_vector::select_0_type> *tree; // tree sequence (DFUDS) 
+		//bp_support_sada<256u, 32u, rank_support_v5<0>, bit_vector::select_0_type> *tree; // tree sequence (DFUDS) 
+		bp_support_sada<t_sml_blk, t_med_deg, rank_support_v5<0>, bit_vector::select_0_type> *tree; // tree sequence (DFUDS) 
+		//bp_support_gg<nearest_neighbour_dictionary<30>, rank_support_v5<0>, bit_vector::select_0_type, 840> *tree;
 		bit_vector::select_1_type *tree_s1;
 		vector<int> *info; 
 		size_t nodes;
 		//string seq;
+		bit_vector *b;
   	public:
 		cardinal_tree(string seq_, bit_vector * bp, vector<int> * info_) {
 			nodes = (*bp).size() / 2;
@@ -28,11 +34,22 @@ template <class A_Type> class cardinal_tree
 			// Inicializar sequence.
 			construct_im(*letts, seq_, 1); // Revisar "1"
 			// Inicializar tree BP.
-			tree = new bp_support_sada<256u, 32u, rank_support_v5<0>, bit_vector::select_0_type>(bp);  // <- pointer to b
+			tree = new bp_support_sada<t_sml_blk, t_med_deg, rank_support_v5<0>, bit_vector::select_0_type>(bp);  // <- pointer to b
+			//tree = new bp_support_gg<nearest_neighbour_dictionary<30>, rank_support_v5<0>, bit_vector::select_0_type, 840>(bp);
 			tree_s1 = new bit_vector::select_1_type(bp);
 			info = info_;
+			b = bp;
+			//cout << "[Constructor] bp size: " << tree->size() << endl;
+			//cout << "[Constructor] letss size: " << letts->size() << endl;
 		}
 		
+		size_t get_bp_size() {
+			return tree->size();
+		}
+
+		size_t get_letts_size() {
+			return letts->size();
+		}
 	
 		// print_data: print node data.
 		void print_data() {
@@ -66,7 +83,7 @@ template <class A_Type> class cardinal_tree
 		}
 
 		// Symbols operations.
-		// label_rank: return count of char s until position x.
+		// label_rank: return count of char s until position x (inclusive).
 		size_t label_rank(size_t x, char s) {
 			return letts->rank(x, s);
 		}
@@ -79,7 +96,7 @@ template <class A_Type> class cardinal_tree
 		// Cardinal Tree Operations.
 		// degree: return degree of node that begin in pos i.
 		size_t degree(size_t x) {
-			return tree_select0(tree_rank0(x-1) + 1) - x;	
+			return tree_select0(tree_rank0(x - 1) + 1) - x;	
 		}
 		
 		// parent: return parent node's position.
@@ -89,10 +106,6 @@ template <class A_Type> class cardinal_tree
 			return tree_select0(tmp) + 1;
 		}
 
-		// child: return position of i-th child (i=1..I). 
-		size_t child(size_t x, size_t i) {
-			return tree->find_close(tree_select0(tree_rank0(x) + 1) - i) + 1;
-		}
 
 		// preorder: given a node at position x, return his preorder number.
 		size_t preorder(size_t x) {
@@ -131,7 +144,26 @@ template <class A_Type> class cardinal_tree
 			// menos 1: porque los indices empiezan de 0 y hay 1 simbolo menos que el preorden del nodo.
 			// y menos 1: por el dummy.
 			//return seq[tree_rank1(x - 1) + i + - 1 - 1] ; 
-			return (*letts)[tree_rank1(x - 1) + i + - 2] ; 
+			return (*letts)[tree_rank1(x - 1) + i - 2] ; 
+		}
+
+		// child: return position of i-th child (i=1..I). 
+		size_t child(size_t x, size_t i) {
+			/*
+			cout << "========================================================" << endl;
+			cout << "|                   [DEBUG CHILD]                      |" << endl;
+			cout << "========================================================" << endl;
+			cout << "x: " << x << endl;
+			cout << "tree_rank0(x): " << tree_rank0(x) << endl;
+			cout << "tree_select0(tree_rank0(x) + 1): " << tree_select0(tree_rank0(x) + 1) << endl;
+
+			cout << "tree[tree_select0(tree_rank0(x)): " << (*b)[tree_select0(tree_rank0(x) + 1)] << endl;
+			cout << "i: " << i << endl;
+			cout << "tree_select0(tree_rank0(x) + 1) - i: " << tree_select0(tree_rank0(x) + 1) - i << endl;
+			cout << "find_close(·): " << tree->find_close(tree_select0(tree_rank0(x) + 1) - i) << endl;
+			cout << "find_close(1): " << tree->find_close(1) << endl;
+			*/
+			return tree->find_close(tree_select0(tree_rank0(x) + 1) - i) + 1;
 		}
 
 		// label_child: return the position of the child of node x, labeled with alpha.
@@ -143,12 +175,15 @@ template <class A_Type> class cardinal_tree
 				position_symbols_begin = 0;
 			}
 			else position_symbols_begin = tree_rank1(x - 1) - 1; 
+			//cout << "[DEBUG][label_child] postion_symbols_begin: " << position_symbols_begin << " ";
 			size_t alpha_previous_count; 
 			if (position_symbols_begin == 0) alpha_previous_count = 0;
-			else alpha_previous_count = label_rank(position_symbols_begin - 1, alpha);
+			else alpha_previous_count = label_rank(position_symbols_begin, alpha);
+			//cout << "alpha_previous_count: " << alpha_previous_count << " ";
 			// position_next_alpha: posicion de la siguiente aparicion de alpha (alpha buscado)
 			size_t position_alpha = label_select(alpha_previous_count + 1, alpha); 
 			size_t i = position_alpha - position_symbols_begin + 1;
+			//cout << "i: " << i << " node: " << x << " alpha: " << alpha << endl;
 			// restar ambas posiciones, Donde inician los simbolos del nodo y la posición del alpha buscado.
 			return child(x, i); 
 		}
@@ -178,11 +213,19 @@ template <class A_Type> class cardinal_tree
 		// get_size: Return the size of the whole cardinal tree, including bp structure
 		// rank/select structure for symbols.
 		size_t get_size() {
-			cout << "*letts: " <<  sizeof(*letts) << endl;
-			cout << "parentheses: " << sizeof(*tree) << endl;
-			cout << "select_1: " << sizeof(*tree_s1) << endl;
-			cout << " " << sizeof(*tree_s1) << endl;
-			return sizeof(*letts) + sizeof(*tree) + sizeof(*tree_s1);
+			//cout << "letts sizeof: " << sizeof(*letts) << endl;
+			//cout << "letts size: " <<  letts->size() << endl;
+			//cout << "parentheses sizeof: " << sizeof(*tree) << endl;
+			//cout << "parentheses size: " << tree->size() << endl;
+			//cout << "select_1 sizeof: " << sizeof(*tree_s1) << endl;
+			//
+			//cout << "tree_s1 size_in_bytes: " << size_in_bytes(*tree_s1) << endl;
+			//cout << "tree size_in_bytes: " << size_in_bytes(*tree) << endl;
+			//cout << "letts size_in_bytes: " << size_in_bytes(*letts) << endl;
+			cout << size_in_bytes(*tree_s1) << "|" << size_in_bytes(*tree) << "|" << size_in_bytes(*letts) << "|";
+			//
+			//cout << "select_1 size: " << tree_s1->size() << endl;
+			return letts->size() + tree->size() + sizeof(*tree_s1);
 		}
 
 		~cardinal_tree() {delete tree; delete letts;}

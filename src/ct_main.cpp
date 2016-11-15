@@ -19,12 +19,14 @@ typedef unsigned char uchar;
 
 
 template<class type>
-double tester(type *ct, size_t N=4, bool verbose=false) {
+double tester(type *ct, size_t N=20, bool verbose=false) {
 	//double total_time, time;
 	chrono::high_resolution_clock::time_point start_time, end_time;
 	chrono::duration<double> total_time;
 	size_t count, degree, node, ith_child, next_node;
 	char label;
+	cout << ct->get_letts_size() << "|";
+	cout << ct->get_bp_size() << "|"; 
 	count = degree = 0;
 	// 1 is the root node.
 	size_t root_degree = ct->degree(1);
@@ -34,36 +36,27 @@ double tester(type *ct, size_t N=4, bool verbose=false) {
 		if (degree == 0) {
 			node = 1;
 			degree = root_degree;
+			label = '@';
 		}
 		ith_child = rand() % degree + 1;
-		if (verbose) cout << "[DEBUG] node: " << node << " label: " << label << " Preorder: " << ct->preorder(node) << endl;
-		if (verbose) cout << "[DEBUG] degree: " << ct->degree(node) << endl;
+		//cout << "[DEBUG] ith_child_random: " << ith_child << " ";
+		if (verbose) cout << "actual_node: " << node << " Preorder(actual_node): " << ct->preorder(node) << " degree(actual_node): " << ct->degree(node); 
+		//cout << "[DEBUG] "<< " label: " << label << endl;
 		label = ct->label(node, ith_child);
-		if (verbose) cout << "[DEBUG] New label: " << label << " to int: " << (int)label << endl;
-		if (verbose) cout << "[DEBUG] ct->label_child(" << node << ", '" << label << "'): " << endl << endl; 
-
-		//time = getTime();
+		if (verbose) cout << " New label: " << label << " to int: " << (int)label << endl;
 		start_time = chrono::high_resolution_clock::now();
 		next_node = ct->label_child(node, label);
+		//cout << "next_node: " << next_node << endl; 
+		//cout << endl << endl;
 		end_time = chrono::high_resolution_clock::now();
-		//cout << "microseconds: " << chrono::duration_cast<chrono::microseconds>(end_time - start_time).count()/1000000. << endl;
-		//total_time += (getTime() - time);
 		total_time += end_time - start_time;
 
 		node = next_node;
-		//if (node > ct->count_nodes()*2) degree = 0;
-		//else degree = ct->degree(node);
 		degree = ct->degree(node);
 
 		count++;
 	}
-	//cout << "[TEST] Total time (" <<  N << " queries): " << total_time << endl;
-	//cout << "[CHRONO] " << chrono::duration_cast<chrono::microseconds>(total_time).count() << "ms" << endl;
-	//cout << "[CHRONO] " << chrono::duration_cast<chrono::nanoseconds>(total_time).count() << "ns" << endl;
 	double time = chrono::duration_cast<chrono::microseconds>(total_time).count();
-	//double average_time = total_time / N;
-	//return average_time;
-	//return total_time;
 	return time/N;
 }
 
@@ -80,7 +73,6 @@ void print_usage() {
 	cout << "\tprefix_file.ascii and prefix_file.letts must be exists." << endl << endl;
 }
 
-//void replace_null(string seq, char c, size_t N); 
 int main(int argc, char *argv[]) {
 	char *name_bp, *name_letts, *name_size, *type_wt;
 
@@ -105,9 +97,10 @@ int main(int argc, char *argv[]) {
 		type_wt = (char*)malloc(strlen(argv[1]));
 	   	strcpy(type_wt, argv[1]);
 	} else if (argc == 1) {
-		print_usage();
 		main_test();
 		return 0;
+	} else if (strcmp(argv[2], "-h") == 0) {
+		print_usage();
 	}
 	process_data(name_bp, name_letts, type_wt);
 	return 0;
@@ -118,9 +111,29 @@ void print_output(string structure, char *name_letts, bool check_data, size_t to
 	//cout << "[DEBUG] Check data: " << check_data << endl;
 	//cout << "[Tree Info] Total nodes: " << total_nodes << endl;
 	//cout << "[Tree Info] Size parentheses: " << bp_size << endl;
-	//cout << "[TEST]" << " Average Time: " << time << "[us]" << endl;
-	cout << "[" << name_letts << "][" << structure << "][Time][" << time << "][microseconds]" << "[Voc Size][" << voc_size << "]" << endl;
+	//cout << "[" << name_letts << "][" << structure << "][Time][" << time << "][microseconds]" << "[Voc Size][" << voc_size << "]" << endl;
+	cout << name_letts << "|" << structure << "|" << time << "|" << voc_size << "|";
 }
+
+bool count_parentheses(bit_vector *bp) {
+	size_t open = 0, close = 0;
+	bit_vector values = {0, 1};
+	for (size_t i=0; i<bp->size(); i++) {
+		if ((*bp)[i] == 1u) open++;
+		else if ((*bp)[i] == 0u) close++;
+		if (open < close){
+			cout << "open: " << open << endl;
+			cout << "close: " << close << endl;
+			return false;
+		}
+	}
+	cout << "open: " << open << endl;
+	cout << "close: " << close << endl;
+	if (open == close) return true;
+	return false;
+
+}
+
 
 void process_data(char *name_bp, char *name_letts, char *type_wt) {
 	char *bp;
@@ -139,9 +152,8 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 
 	bit_vector b(total_nodes*2);
 	bp_string_to_bit_vector(bp, &b);
-	cout << "CHECK BP: ";
-	if (check_balanced(&b) == true) cout << "OK" << endl;
-	else cout << "FAILED" << endl;
+	//cout << "[DEBUG] count_parentheses(b): " << count_parentheses(&b) << endl;
+	//cout << "[DEBUG] check_balanced(b): " << check_balanced(&b) << endl;
 	
 	//cout << "[DEBUG][prepare_data] bit_vector.size(): " << b.size() << endl;
 	//cout << "[DEBUG][prepare_data] Check balanced parentheses: " << check_balanced(bp) << endl << endl;
@@ -161,6 +173,11 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 	letts2.reserve(total_nodes);
 	letts2 = reinterpret_cast<char*>(letts);
 	voc_size = vocabulary_size(letts2);
+	if (check_data(&b, letts2, total_nodes) == true) cout << "OK|";
+	else cout << "FAILED|"; 
+
+	//cout << "label root: ";
+	//for (int i=0; i<16; i++) cout << letts2[i]; cout << endl;
 	//for (size_t i=0; i<209; i++) cout << i << ": " << (int)letts2[i] << endl;
 	//cout << "[DEBUG][prepare_data] letts 0-11: "; for (size_t i=0; i<11; i++) cout << letts2[i] << " "; cout << endl;
 	//cout << "[DEBUG][prepare_data] letts.capacity(): " << letts2.capacity() << endl;
@@ -175,41 +192,109 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 	if (strcmp(type_wt, "gmr") == 0) {
 		name = "Golynski";
 		cardinal_tree<wt_gmr<>> ct(letts2, &b, &info);
+
+		//cout << "bp.size(): " << b.size() << endl;
+		//cout << "tree_rank0(60272746): " << ct.tree_rank0(b.size()-1) << endl;
+		//cout << "tree_rank1(60272746): " << ct.tree_rank1(b.size()-1) << endl;
+
+		//cout << "letts2.size(): " << letts2.size() << endl;
+		//cout << "get_letts_size(): " << ct.get_letts_size() << endl;
+		//cout << "NEXT LINE" << endl;
+		//cout << "label_rank(A): " << ct.label_rank(30136371, 'A') << endl;
+		//cout << "label_rank(G): " << ct.label_rank(30136371, 'G') << endl;
+		//cout << "label_rank(T): " << ct.label_rank(30136371, 'T') << endl;
+		//cout << "label_rank(C): " << ct.label_rank(30136371, 'C') << endl;
+		//cout << "label_rank((char)1): " << ct.label_rank(30136371, (char)1) << endl;
+
+		//cout << "degree(ct.child(1, 16)): " << ct.degree(ct.child(1, 16)) << endl;
+		//cout << "child(1, 16): " << ct.child(1,16) << endl;
+		//cout << "child(ct.child(1, 16), 4): " << ct.child(ct.child(1, 16), 4) << endl;
+		
+		
+		//cout << "degree(362): " << ct.degree(362) << endl;
+		//cout << "child(362, 4): " << ct.child(362, 4) << endl;
 		time = tester(&ct);
+
+		//cout << "Test Child." << endl; test_child(&ct);
 		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size(), time, voc_size);
+		ct.get_size();
 	} else if (strcmp(type_wt, "wt") == 0) {
 		name = "Balanced Wavelet Tree";
 		cardinal_tree<wt_blcd<>> ct(letts2, &b, &info);
 		time = tester(&ct);
+		//cout << "Test Degree." << endl; brute_test_degree(&b);
 		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size(), time, voc_size);
+		ct.get_size();
 	} else if (strcmp(type_wt, "wth") == 0) {
 		name = "Huffman Wavelet Tree";
 		cardinal_tree<wt_huff<>> ct(letts2, &b, &info);
 		time = tester(&ct);
+		//cout << "Test Degree." << endl; brute_test_degree(&b);
 		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size(), time, voc_size);
+		ct.get_size();
 	} else if (strcmp(type_wt, "bin") == 0) {
 		name = "Binary Search";
 		cardinal_tree_bs ct(letts2, &b, &info);
 		time = tester(&ct);
+		//cout << "Test Degree." << endl; brute_test_degree(&b);
 		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size(), time, voc_size);
+		ct.get_size();
 	} else if (strcmp(type_wt, "ap") == 0) {
 		name = "Alphabet Partitioning";
 		cardinal_tree<wt_gmr<>> ct(letts2, &b, &info);
 		time = tester(&ct);
+		//cout << "Test Degree." << endl; brute_test_degree(&b);
 		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size(), time, voc_size);
+		ct.get_size();
 	}
-
-	//cout << "[DEBUG] NAME: " << name << endl;
-
+	cout << endl;
 }
 
 
 int main_test() {
-	bit_vector bptest = {1,1,1,1,0,1,1,0,0,0,0,1,1,0,1,0,0,1,1,0,0,0};
-	string letts = "bcrbccrbcr";
+	bit_vector b = {1,1,1,1,1,0,0,1,1,1,1,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0};
+	string letts = "abcdabcdabcd";
+	letts = "abcdefghijkl";
+	vector<int> info{0,1,2,3,4,5,6,7,8,9,10,11,12};
+
+	cout << "Validador Total parentesis: " << count_parentheses(&b) << endl;
+	cout << "[CHECK DATA] ";
+	size_t total_nodes = 13;
+	if (check_data(&b, letts, total_nodes) == true) cout << "OK" << endl;
+	else cout << "FAILED" << endl;
+
+	cardinal_tree<wt_gmr<>> ct(letts, &b, &info);
+
+	//cout << "label_rank: " << ct.label_rank(0, 'a') << endl;
+	//cout << "label_select: " << ct.label_select(1, 'a') << endl;
+	//cout << "tree_rank0: " << ct.tree_rank0(5) << endl;
+	//cout << "tree_rank1: " << ct.tree_rank1(0) << endl;
+	//cout << "tree_select0: " << ct.tree_select0(1) << endl;
+	//cout << "tree_select1: " << ct.tree_select1(1) << endl;
+	//cout << "Test Preorder." << endl; test_preorder(&ct);
+	//cout << "Wrong (8): " << ct.preorder(8) << endl;
+	//cout << "Wrong (11): " << ct.preorder(11) << endl;
+
+	//cout << "Test Child." << endl; test_child(&ct);
+	cout << "Test label: " << endl; test_label(&ct);
+	//cout << "Test label_child: " << endl; test_label_child(&ct);
+	cout << "Test degree: " << endl; test_degree(&ct);
+
+	return 0;
+}
+
+
+int main_test2() {
+	bit_vector b = {1,1,1,1,0,1,1,0,0,0,0,1,1,0,1,0,0,1,1,0,0,0};
+	string letts = "bcrbcczbcr";
 	vector<int> info{0,1,2,3,4,5,6,7,8,9,10};
 
-	cardinal_tree<wt_gmr<>> ct(letts, &bptest, &info);
+	cout << "[CHECK DATA] ";
+	size_t total_nodes = 11;
+	if (check_data(&b, letts, total_nodes) == true) cout << "OK" << endl;
+	else cout << "FAILED" << endl;
+
+	cardinal_tree<wt_gmr<>> ct(letts, &b, &info);
 	//cardinal_tree<wt_huff<>> ct(letts, &bptest, &info);
 	//cardinal_tree<wt_blcd<>> ct(letts, &bptest, &info);
 	//cardinal_tree<wt_gmr<>> ct(letts, &bptest, &info);
@@ -225,26 +310,26 @@ int main_test() {
 	cout << "[TREE OPERATIONS OK]" << endl << endl;
 
 
-	for (size_t i=1; i<17; i++) cout << ct.label(1, i) << " "; cout << endl;
-	//cout << "Print data:" << endl; ct_gmr.print_data();
-	//cout << "Test Degree." << endl; test_degree(&ct_gmr);
-	//cout << "Test Parent." << endl; test_parent(&ct_gmr);
-	//cout << "Test Child." << endl; test_child(&ct_gmr);
-	//cout << "Test Preorder." << endl; test_preorder(&ct_gmr);
-	//cout << "Test Child_rank." << endl; test_child_rank(&ct_gmr);
-	//cout << "Test Select_node." << endl; test_select_node(&ct_gmr);
-	//cout << "Test Subtree_size." << endl; test_subtree_size(&ct_gmr);
-	//cout << "Test access_data: " << endl; test_access_data(&ct_gmr);
-	//cout << "Test label(j=0, 1): " << ct_gmr.label(1, 1) << endl;
-	cout << "Test label: " << endl; test_label(&ct);
+	//for (size_t i=1; i<17; i++) cout << ct.label(1, i) << " "; cout << endl;
+	//cout << "Print data:" << endl; ct.print_data();
+	//cout << "Test Degree." << endl; test_degree(&ct);
+	//cout << "Test Parent." << endl; test_parent(&ct);
+	//cout << "Test Child." << endl; test_child(&ct);
+	//cout << "Test Preorder." << endl; test_preorder(&ct);
+	//cout << "Test Child_rank." << endl; test_child_rank(&ct);
+	//cout << "Test Select_node." << endl; test_select_node(&ct);
+	//cout << "Test Subtree_size." << endl; test_subtree_size(&ct);
+	//cout << "Test access_data: " << endl; test_access_data(&ct);
+	//cout << "Test label(j=0, 1): " << ct.label(1, 1) << endl;
+	//cout << "Test label: " << endl; test_label(&ct);
 	cout << "Test label_child: " << endl; test_label_child(&ct);
-	//cout << "label_rank(7, 'a'): " << ct_gmr.label_rank(7, 'a') << endl;
-	//cout << "label_select(1, 'n'): " << ct_gmr.label_select(1, 'n') << endl;
-	//cout << "Test label_reverse: " << endl; test_label_reverse(&ct_gmr);
-	//cout << "Test label_child_reverse: " << endl; test_label_child_reverse(&ct_gmr);
-	//cout << "[Node 0] label_child_reverse(1, 'r'): " << ct_gmr.label_child_reverse(1, 'r') << endl;
-	//cout << "[Node 1] label_child_reverse(5, 'c'): " << ct_gmr.label_child_reverse(5, 'c') << endl;
-	//cout << "[Node 5] label_child_reverse(11, 'r'): " << ct_gmr.label_child_reverse(11, 'r') << endl;
+	//cout << "label_rank(7, 'a'): " << ct.label_rank(7, 'a') << endl;
+	//cout << "label_select(1, 'n'): " << ct.label_select(1, 'n') << endl;
+	//cout << "Test label_reverse: " << endl; test_label_reverse(&ct);
+	//cout << "Test label_child_reverse: " << endl; test_label_child_reverse(&ct);
+	//cout << "[Node 0] label_child_reverse(1, 'r'): " << ct.label_child_reverse(1, 'r') << endl;
+	//cout << "[Node 1] label_child_reverse(5, 'c'): " << ct.label_child_reverse(5, 'c') << endl;
+	//cout << "[Node 5] label_child_reverse(11, 'r'): " << ct.label_child_reverse(11, 'r') << endl;
 	//tester(&ct);
 
 	//cout << "ancestor(j=5, j=4): " << ct.ancestor(ct.select_node(5), ct.select_node(4)) << endl;

@@ -14,7 +14,7 @@ typedef unsigned char uchar;
 class cardinal_tree_bs {
 	private:
 		string letts; // symbol sequence.
-		bp_support_sada<256u, 32u, rank_support_v5<0>, bit_vector::select_0_type> *tree; // tree sequence (DFUDS) 
+		bp_support_sada<t_sml_blk, t_med_deg, rank_support_v5<0>, bit_vector::select_0_type> *tree; // tree sequence (DFUDS) 
 		bit_vector::select_1_type *tree_s1;
 		vector<int> *info; 
 		size_t nodes;
@@ -23,11 +23,18 @@ class cardinal_tree_bs {
 			nodes = (*bp).size() / 2;
 			letts = seq_;
 			// Inicializar tree BP.
-			tree = new bp_support_sada<256u, 32u, rank_support_v5<0>, bit_vector::select_0_type>(bp);  // <- pointer to b
+			tree = new bp_support_sada<t_sml_blk, t_med_deg, rank_support_v5<0>, bit_vector::select_0_type>(bp);  // <- pointer to b
 			tree_s1 = new bit_vector::select_1_type(bp);
 			info = info_;
 		}
-		
+
+		size_t get_bp_size() {
+			return tree->size();
+		}
+
+		size_t get_letts_size() {
+			return letts.size();
+		}
 	
 		// print_data: print node data.
 		void print_data() {
@@ -151,11 +158,16 @@ class cardinal_tree_bs {
 		// get_binary_size: Return the size of the whole cardinal tree, including bp structure
 		// Here is not use a rank/select structure for symbols, so it's not considered in size.
 		size_t get_size() {
-			cout << "*labels: " <<  letts.size() << endl;
-			cout << "parentheses: " << sizeof(*tree) << endl;
-			cout << "select_1: " << sizeof(*tree_s1) << endl;
-			cout << " " << sizeof(*tree_s1) << endl;
-			return letts.size() + sizeof(*tree) + sizeof(*tree_s1);
+			//cout << "tree (select1) size_in_bytes: " << size_in_bytes(*tree_s1) << endl;
+			//cout << "tree size_in_bytes: " << size_in_bytes(*tree) << endl;
+			//cout << "letts size_in_bytes: " << letts.size() << endl;
+			cout << size_in_bytes(*tree_s1) << "|" << size_in_bytes(*tree) << "|" << letts.size() << "|";
+			//cout << "*labels: " <<  letts.size() << endl;
+			//cout << "parentheses: " << sizeof(*tree) << endl;
+			//cout << "select_1: " << sizeof(*tree_s1) << endl;
+			//cout << " " << sizeof(*tree_s1) << endl;
+			//return letts.size() + sizeof(*tree) + sizeof(*tree_s1);
+			return 0;
 		}
 
 		~cardinal_tree_bs() {delete tree;}
