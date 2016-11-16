@@ -12,6 +12,7 @@
 #include "utils.hpp"
 #include "read_utils.hpp"
 #include "cardinal_tree_bs.hpp"
+#include "cardinal_tree_ls.hpp"
 using namespace std;
 using namespace sdsl;
 
@@ -19,7 +20,7 @@ typedef unsigned char uchar;
 
 
 template<class type>
-double tester(type *ct, size_t N=20, bool verbose=false) {
+double tester(type *ct, size_t N=10000, bool verbose=false) {
 	//double total_time, time;
 	chrono::high_resolution_clock::time_point start_time, end_time;
 	chrono::duration<double> total_time;
@@ -230,6 +231,12 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 		cardinal_tree<wt_huff<>> ct(letts2, &b, &info);
 		time = tester(&ct);
 		//cout << "Test Degree." << endl; brute_test_degree(&b);
+		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size(), time, voc_size);
+		ct.get_size();
+	} else if (strcmp(type_wt, "ls") == 0) {
+		name = "Linear Search";
+		cardinal_tree_ls ct(letts2, &b, &info);
+		time = tester(&ct);
 		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size(), time, voc_size);
 		ct.get_size();
 	} else if (strcmp(type_wt, "bin") == 0) {
