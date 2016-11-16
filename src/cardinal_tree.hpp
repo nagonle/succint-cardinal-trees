@@ -7,8 +7,8 @@
 #include <vector>
 
 //#define t_sml_blk 2018475u
-#define t_sml_blk 512u
-#define t_med_deg 128u
+#define t_sml_blk 128u
+#define t_med_deg 512u
 using namespace std;
 using namespace sdsl;
 
@@ -83,12 +83,12 @@ template <class A_Type> class cardinal_tree
 		}
 
 		// Symbols operations.
-		// label_rank: return count of char s until position x (inclusive).
+		// label_rank: return count of char s until position x-1 (not inclusive!).
 		size_t label_rank(size_t x, char s) {
 			return letts->rank(x, s);
 		}
 
-		// label_select: Return # char s until position x-1. No Inclusive!.
+		// label_select: Return position of x-th char s.
 		size_t label_select(size_t x, char s) {
 			return letts->select(x, s);
 		}

@@ -121,7 +121,6 @@ class cardinal_tree_ls {
 		char label(size_t x, size_t i) {
 			// menos 1: porque los indices empiezan de 0 y hay 1 simbolo menos que el preorden del nodo.
 			// y menos 1: por el dummy.
-			cout << "i: " << i << endl;
 			return letts[tree_rank1(x - 1) + i + - 2] ; 
 		}
 
@@ -129,7 +128,8 @@ class cardinal_tree_ls {
 		// seeking an alpha.
 		int lineal_search(string seq, int left, int right, char alpha) {
 			for (size_t i=left; i<right+1; i++) {
-				if (seq[i] == alpha) return i-left+1;
+				//cout << "i: " << i << " " << "left: " << left << " " << "i-left: " << i-left << " right: " << right << " ";
+				if (seq[i] == alpha) return i;
 			}
 			return -1;
 		}
@@ -147,6 +147,7 @@ class cardinal_tree_ls {
 			size_t position_symbols_end;
 			position_symbols_end = tree_rank1(tree_select0(tree_rank0(x - 1) + 1)) - 2;
 			size_t i = lineal_search(letts, position_symbols_begin, position_symbols_end, alpha);
+
 			i = i-position_symbols_begin+1;
 			return child(x, i); 
 		}
