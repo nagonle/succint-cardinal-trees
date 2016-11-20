@@ -39,10 +39,10 @@ uint read_letts(char *name_file, uint8_t **letts) {
 	symbols = nodes - 1;
 	// Read zero separator
 	in.read((char*)&tmp, sizeof(uint8_t));
-	(*letts) = (uint8_t*)malloc(symbols+1);
+	(*letts) = (uint8_t*)malloc(symbols);
 	in.read((char*)*letts, sizeof(uint8_t)*symbols);
 	in.close();
-	(*letts)[symbols] = 0;
+	//(*letts)[symbols] = 0;
 
 	return nodes;
 }
