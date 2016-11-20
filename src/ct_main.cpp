@@ -249,10 +249,10 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 		time = tester(&ct);
 		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size(), time, voc_size);
 		ct.get_size();
-	} else if (strcmp(type_wt, "bin") == 0) {
+	} else if (strcmp(type_wt, "bs") == 0) {
 		name = "Binary Search";
-		cardinal_tree_bs ct(letts2, &b, &info);
-		//cardinal_tree_bs ct(my_vector, &b, &info);
+		//cardinal_tree_bs ct(letts2, &b, &info);
+		cardinal_tree_bs ct(&my_vector, &b, &info);
 		time = tester(&ct);
 		//cout << "Test Degree." << endl; brute_test_degree(&b);
 		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size(), time, voc_size);
