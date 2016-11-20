@@ -244,8 +244,8 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 		ct.get_size();
 	} else if (strcmp(type_wt, "ls") == 0) {
 		name = "Linear Search";
-		cardinal_tree_ls ct(letts2, &b, &info);
-		//cardinal_tree_ls ct(my_vector, &b, &info);
+		//cardinal_tree_ls ct(letts2, &b, &info);
+		cardinal_tree_ls ct(&my_vector, &b, &info);
 		time = tester(&ct);
 		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size(), time, voc_size);
 		ct.get_size();
