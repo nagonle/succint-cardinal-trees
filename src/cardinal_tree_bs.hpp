@@ -18,6 +18,7 @@ class cardinal_tree_bs {
 		bit_vector::select_1_type *tree_s1;
 		vector<int> *info; 
 		size_t nodes;
+		bit_vector *b;
   	public:
 		cardinal_tree_bs(string seq_, bit_vector * bp, vector<int> * info_) {
 			nodes = (*bp).size() / 2;
@@ -26,8 +27,13 @@ class cardinal_tree_bs {
 			tree = new bp_support_sada<t_sml_blk, t_med_deg, rank_support_v5<0>, bit_vector::select_0_type>(bp);  // <- pointer to b
 			tree_s1 = new bit_vector::select_1_type(bp);
 			info = info_;
+			b = bp;
 		}
 
+		char get_bp(size_t x) {
+			if ((*b)[x] == 1) return '(';
+			return ')';
+		}
 		size_t get_bp_size() {
 			return tree->size();
 		}

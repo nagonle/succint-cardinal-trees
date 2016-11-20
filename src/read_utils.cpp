@@ -29,7 +29,7 @@ size_t vocabulary_size(string& letts) {
 }
 
 // read_letts: Store the symbols in letts and return the number of nodes.
-uint read_letts(char *name_file, uchar **letts) {
+uint read_letts(char *name_file, uint8_t **letts) {
 	uint nodes, symbols;
 	char tmp[2];
 	ifstream in;
@@ -38,9 +38,9 @@ uint read_letts(char *name_file, uchar **letts) {
 	in.read((char*)&nodes, sizeof(uint));
 	symbols = nodes - 1;
 	// Read zero separator
-	in.read((char*)&tmp, sizeof(char));
-	(*letts) = (uchar*)malloc(symbols+1);
-	in.read((char*)*letts, symbols);
+	in.read((char*)&tmp, sizeof(uint8_t));
+	(*letts) = (uint8_t*)malloc(symbols+1);
+	in.read((char*)*letts, sizeof(uint8_t)*symbols);
 	in.close();
 	(*letts)[symbols] = 0;
 
@@ -118,7 +118,7 @@ bool exists(string seq, char c, size_t N) {
 }
 
 // replace_null: Search in seq occurrences for NULL character and replace it for char c.
-void replace_null(uchar *seq, char c, size_t N) {
+void replace_null(uint8_t *seq, char c, size_t N) {
 	for (size_t i=0; i<N; i++) {
 		if (seq[i] == 0) {
 			seq[i] = c;

@@ -4,11 +4,12 @@
 #include <sdsl/bit_vectors.hpp>
 #include <sdsl/bp_support.hpp>
 #include <sdsl/wavelet_trees.hpp>
+#include <sdsl/int_vector.hpp>
 #include <vector>
 
 //#define t_sml_blk 2018475u
-#define t_sml_blk 128u
-#define t_med_deg 512u
+#define t_sml_blk 1024u
+#define t_med_deg 2048u
 using namespace std;
 using namespace sdsl;
 
@@ -43,6 +44,27 @@ template <class A_Type> class cardinal_tree
 			//cout << "[Constructor] letss size: " << letts->size() << endl;
 		}
 		
+		cardinal_tree(int_vector<> seq_, bit_vector * bp, vector<int> * info_) {
+			nodes = (*bp).size() / 2;
+			letts = new A_Type();
+			//seq = seq_;
+			// Inicializar sequence.
+			construct_im(*letts, seq_, 0); // Revisar "1"
+			// Inicializar tree BP.
+			tree = new bp_support_sada<t_sml_blk, t_med_deg, rank_support_v5<0>, bit_vector::select_0_type>(bp);  // <- pointer to b
+			//tree = new bp_support_gg<nearest_neighbour_dictionary<30>, rank_support_v5<0>, bit_vector::select_0_type, 840>(bp);
+			tree_s1 = new bit_vector::select_1_type(bp);
+			info = info_;
+			b = bp;
+			//cout << "[Constructor] bp size: " << tree->size() << endl;
+			//cout << "[Constructor] letss size: " << letts->size() << endl;
+		}
+
+		char get_bp(size_t x) {
+			if ((*b)[x] == 1) return '(';
+			return ')';
+		}
+
 		size_t get_bp_size() {
 			return tree->size();
 		}
@@ -84,12 +106,12 @@ template <class A_Type> class cardinal_tree
 
 		// Symbols operations.
 		// label_rank: return count of char s until position x-1 (not inclusive!).
-		size_t label_rank(size_t x, char s) {
+		size_t label_rank(size_t x, uint8_t s) {
 			return letts->rank(x, s);
 		}
 
 		// label_select: Return position of x-th char s.
-		size_t label_select(size_t x, char s) {
+		size_t label_select(size_t x, uint8_t s) {
 			return letts->select(x, s);
 		}
 
@@ -140,7 +162,7 @@ template <class A_Type> class cardinal_tree
 		}
 
 		// label: return the label of the i-th child of node x. (i=1..I).
-		char label(size_t x, size_t i) {
+		uint8_t label(size_t x, size_t i) {
 			// menos 1: porque los indices empiezan de 0 y hay 1 simbolo menos que el preorden del nodo.
 			// y menos 1: por el dummy.
 			//return seq[tree_rank1(x - 1) + i + - 1 - 1] ; 
@@ -167,7 +189,7 @@ template <class A_Type> class cardinal_tree
 		}
 
 		// label_child: return the position of the child of node x, labeled with alpha.
-		size_t label_child(size_t x, char alpha) {
+		size_t label_child(size_t x, uint8_t alpha) {
 			// symbols_previous_count: # simbolos predecesores. Que en el arreglo de simbolos
 			// corresponde a la posicion donde empiezan los simbolos del nodo x.
 			size_t position_symbols_begin;

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <sdsl/bit_vectors.hpp>
+#include <sdsl/int_vector.hpp>
 #include <sdsl/bp_support.hpp>
 #include <sdsl/wavelet_trees.hpp>
 #include <vector>
@@ -20,12 +21,13 @@ typedef unsigned char uchar;
 
 
 template<class type>
-double tester(type *ct, size_t N=10000, bool verbose=false) {
+double tester(type *ct, size_t N=100000, bool verbose=false) {
 	//double total_time, time;
 	chrono::high_resolution_clock::time_point start_time, end_time;
 	chrono::duration<double> total_time;
 	size_t count, degree, node, ith_child, next_node;
-	char label;
+	//char label;
+	uint8_t label;
 	cout << ct->get_letts_size() << "|";
 	cout << ct->get_bp_size() << "|"; 
 	count = degree = 0;
@@ -41,9 +43,10 @@ double tester(type *ct, size_t N=10000, bool verbose=false) {
 		}
 		ith_child = rand() % degree + 1;
 		//cout << "[DEBUG] ith_child_random: " << ith_child << " ";
+		//cout << "p: " << ct->get_bp(node-2) << " " << ct->get_bp(node-1) << " " << ct->get_bp(node) << " " << ct->get_bp(node+1) << " " << ct->get_bp(node+2) << endl;
 		if (verbose) cout << "actual_node: " << node << " Preorder(actual_node): " << ct->preorder(node) << " degree(actual_node): " << ct->degree(node); 
 		//cout << "[DEBUG] "<< " label: " << label << endl;
-		label = ct->label(node, ith_child);
+		label = (uint8_t)ct->label(node, ith_child);
 		if (verbose) cout << " New label: " << label << " to int: " << (int)label << endl;
 		start_time = chrono::high_resolution_clock::now();
 		next_node = ct->label_child(node, label);
@@ -57,6 +60,7 @@ double tester(type *ct, size_t N=10000, bool verbose=false) {
 
 		count++;
 	}
+	cout << "N:"<<N<<"|";
 	double time = chrono::duration_cast<chrono::microseconds>(total_time).count();
 	return time/N;
 }
@@ -138,7 +142,7 @@ bool count_parentheses(bit_vector *bp) {
 
 void process_data(char *name_bp, char *name_letts, char *type_wt) {
 	char *bp;
-	uchar *letts;
+	uint8_t *letts;
 	size_t voc_size;
 	// Get Data.
 	// Read total_nodes and symbols.
@@ -177,6 +181,9 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 	if (check_data(&b, letts2, total_nodes) == true) cout << "OK|";
 	else cout << "FAILED|"; 
 
+	int_vector<> my_vector(total_symbols, 0, 8);
+	for (int i=0; i<total_symbols; i++) my_vector[i] = letts[i];
+
 	//cout << "label root: ";
 	//for (int i=0; i<16; i++) cout << letts2[i]; cout << endl;
 	//for (size_t i=0; i<209; i++) cout << i << ": " << (int)letts2[i] << endl;
@@ -192,7 +199,7 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 	double time;
 	if (strcmp(type_wt, "gmr") == 0) {
 		name = "Golynski";
-		cardinal_tree<wt_gmr<>> ct(letts2, &b, &info);
+		cardinal_tree<wt_gmr<>> ct(my_vector, &b, &info);
 
 		//cout << "bp.size(): " << b.size() << endl;
 		//cout << "tree_rank0(60272746): " << ct.tree_rank0(b.size()-1) << endl;
@@ -221,14 +228,16 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 		ct.get_size();
 	} else if (strcmp(type_wt, "wt") == 0) {
 		name = "Balanced Wavelet Tree";
-		cardinal_tree<wt_blcd<>> ct(letts2, &b, &info);
+		//cardinal_tree<wt_blcd<>> ct(letts2, &b, &info);
+		cardinal_tree<wt_blcd<>> ct(my_vector, &b, &info);
 		time = tester(&ct);
 		//cout << "Test Degree." << endl; brute_test_degree(&b);
 		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size(), time, voc_size);
 		ct.get_size();
 	} else if (strcmp(type_wt, "wth") == 0) {
 		name = "Huffman Wavelet Tree";
-		cardinal_tree<wt_huff<>> ct(letts2, &b, &info);
+		//cardinal_tree<wt_huff<>> ct(letts2, &b, &info);
+		cardinal_tree<wt_huff<>> ct(my_vector, &b, &info);
 		time = tester(&ct);
 		//cout << "Test Degree." << endl; brute_test_degree(&b);
 		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size(), time, voc_size);
@@ -236,19 +245,22 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 	} else if (strcmp(type_wt, "ls") == 0) {
 		name = "Linear Search";
 		cardinal_tree_ls ct(letts2, &b, &info);
+		//cardinal_tree_ls ct(my_vector, &b, &info);
 		time = tester(&ct);
 		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size(), time, voc_size);
 		ct.get_size();
 	} else if (strcmp(type_wt, "bin") == 0) {
 		name = "Binary Search";
 		cardinal_tree_bs ct(letts2, &b, &info);
+		//cardinal_tree_bs ct(my_vector, &b, &info);
 		time = tester(&ct);
 		//cout << "Test Degree." << endl; brute_test_degree(&b);
 		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size(), time, voc_size);
 		ct.get_size();
 	} else if (strcmp(type_wt, "ap") == 0) {
 		name = "Alphabet Partitioning";
-		cardinal_tree<wt_gmr<>> ct(letts2, &b, &info);
+		//cardinal_tree<wt_ap<>> ct(letts2, &b, &info);
+		cardinal_tree<wt_ap<>> ct(my_vector, &b, &info);
 		time = tester(&ct);
 		//cout << "Test Degree." << endl; brute_test_degree(&b);
 		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size(), time, voc_size);

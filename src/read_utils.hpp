@@ -17,7 +17,7 @@ extern bool check_data(bit_vector *b, string& letts, size_t total_nodes);
 extern size_t vocabulary_size(string& letts);
 
 // read_letts: read a file that contains symbols and number of nodes.
-extern uint read_letts(char *name_file, uchar **letts); 
+extern uint read_letts(char *name_file, uint8_t **letts); 
 
 // read_bp: store in bp a sequence of bp in file name_file
 extern void read_bp(char* name_file, char **bp, uint nodes);
@@ -35,6 +35,6 @@ extern uint read_size(string name_file);
 extern bool exists(string seq, char c, size_t N); 
 
 // replace_null: Search in seq occurrences for NULL character and replace it for char c.
-extern void replace_null(uchar *seq, char c, size_t N); 
+extern void replace_null(uint8_t *seq, char c, size_t N); 
 
 #endif

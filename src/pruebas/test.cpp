@@ -4,35 +4,28 @@
 #include <sdsl/wavelet_trees.hpp>
 #include <sdsl/bp_support.hpp>
 #include <sdsl/bit_vectors.hpp>
+#include <sdsl/int_vector.hpp>
 using namespace std;
 using namespace sdsl;
 
 typedef unsigned char uchar;
 
-int binary_search(string seq, int left, int right, char alpha) {
-	int mid;
-	size_t comp = 0;
-	while (left <= right) { 
-		comp++;
-		mid = (left+right)/2; 
-		if (seq[mid] < alpha) left = mid+1;
-		else if (seq[mid] > alpha) right = mid-1;
-		else { 
-			cout << "comp: " << comp << endl;
-			return mid;
-		}
-	}
-	cout << "comp: " << comp << endl;
-	return -1;
-}
 
 int main(int argc, const char *argv[])
 {
-	string a = "abcde123456789fghijklmn0opqrstuvwxyz0opqrstuvwxyztuvwxyz0opq";
-	int N = (int)a.size();
-	for (size_t i=0; i<N; i++) binary_search(a, 0, N-1, a[i]);
-	cout << "N: " << N << endl;
-	cout << "log2(N) = " << log2(N) << endl;
+	uint8_t letts[20] = {2,3,1,255,0,3,2,1,4,2,3,1,2,4,5,3,2,1,3,2};
+	int_vector<> my(20);
+	for (int i=0; i<20; i++) my[i] = letts[i];
+
+	for (int i=0; i<20; i++) cout << my[i] << " ";
+
+	cout << "size char: " << sizeof(char) << endl;
+	cout << "size uint8_t: " << sizeof(uint8_t) << endl;
+
+	bit_vector bp(5);
+	bp = {1,0,1,0,1};
+	bp_support_sada<256, 32, rank_support_v5<0>, bit_vector::select_0_type> tree(&bp);  // <- pointer to b
+	cout << "tree[3]: " << tree.acess(3);
 	return 0;
 }
 
