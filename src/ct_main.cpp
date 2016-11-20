@@ -19,6 +19,37 @@ using namespace sdsl;
 
 typedef unsigned char uchar;
 
+template<class TYPE>
+double test_label_child(TYPE * ct) {
+	size_t x;
+	uint8_t alpha; 
+	size_t label_child_t;
+	size_t N = 0;
+	chrono::high_resolution_clock::time_point start_time, end_time;
+	chrono::duration<double> total_time; 
+	for(size_t j=0; j<ct->degree(1); j++) {
+		alpha = ct->label(1, j+1);
+		start_time = chrono::high_resolution_clock::now();
+		label_child_t = ct->label_child(1, alpha);
+		end_time = chrono::high_resolution_clock::now();
+		total_time += end_time - start_time;
+		N++;
+	}
+
+	for (size_t i=1; i<ct->count_nodes(); i++) {
+		x = ct->tree_select0(i) + 1;
+		for(size_t j=0; j<ct->degree(x); j++) {
+			alpha = ct->label(x, j+1);
+			start_time = chrono::high_resolution_clock::now();
+			label_child_t = ct->label_child(x, alpha);
+			end_time = chrono::high_resolution_clock::now();
+			total_time += end_time - start_time;
+			N++;
+		}
+	}
+	double time = chrono::duration_cast<chrono::microseconds>(total_time).count();
+	return time/N;
+}
 
 template<class type>
 double tester(type *ct, size_t N=100000, bool verbose=false) {
@@ -111,13 +142,13 @@ int main(int argc, char *argv[]) {
 	return 0;
 }
 
-void print_output(string structure, char *name_letts, bool check_data, size_t total_nodes, size_t bp_size, double time, size_t voc_size) {
+void print_output(string structure, char *name_letts, bool check_data, size_t total_nodes, size_t bp_size, double time, size_t voc_size, long double time_full_tree) {
 	//cout << "########## TEST [" << structure << "] on [" << name_letts << "] ##########" << endl;
 	//cout << "[DEBUG] Check data: " << check_data << endl;
 	//cout << "[Tree Info] Total nodes: " << total_nodes << endl;
 	//cout << "[Tree Info] Size parentheses: " << bp_size << endl;
 	//cout << "[" << name_letts << "][" << structure << "][Time][" << time << "][microseconds]" << "[Voc Size][" << voc_size << "]" << endl;
-	cout << name_letts << "|" << structure << "|" << time << "|" << voc_size << "|";
+	cout << name_letts << "|" << structure << "|" << time << "|" << voc_size << "|" << time_full_tree << "|";
 }
 
 bool count_parentheses(bit_vector *bp) {
@@ -197,6 +228,7 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 	//cout << "[DEBUG][prepare_data] Creation Cardinal Tree Successful." << endl;
 	string name;
 	double time;
+	double time_full_tree = 0;
 	if (strcmp(type_wt, "gmr") == 0) {
 		name = "Golynski";
 		cardinal_tree<wt_gmr<>> ct(my_vector, &b, &info);
@@ -222,9 +254,8 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 		//cout << "degree(362): " << ct.degree(362) << endl;
 		//cout << "child(362, 4): " << ct.child(362, 4) << endl;
 		time = tester(&ct);
-
-		//cout << "Test Child." << endl; test_child(&ct);
-		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size(), time, voc_size);
+		time_full_tree = test_label_child(&ct);
+		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size(), time, voc_size, time_full_tree);
 		ct.get_size();
 	} else if (strcmp(type_wt, "wt") == 0) {
 		name = "Balanced Wavelet Tree";
@@ -232,38 +263,41 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 		cardinal_tree<wt_blcd<>> ct(my_vector, &b, &info);
 		time = tester(&ct);
 		//cout << "Test Degree." << endl; brute_test_degree(&b);
-		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size(), time, voc_size);
+		time_full_tree = test_label_child(&ct);
+		//test_label_child(&ct);
+		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size(), time, voc_size, time_full_tree);
 		ct.get_size();
 	} else if (strcmp(type_wt, "wth") == 0) {
 		name = "Huffman Wavelet Tree";
 		//cardinal_tree<wt_huff<>> ct(letts2, &b, &info);
 		cardinal_tree<wt_huff<>> ct(my_vector, &b, &info);
-		time = tester(&ct);
-		//cout << "Test Degree." << endl; brute_test_degree(&b);
-		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size(), time, voc_size);
+		time_full_tree = test_label_child(&ct);
+		//test_label_child(&ct);
+		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size(), time, voc_size, time_full_tree);
 		ct.get_size();
 	} else if (strcmp(type_wt, "ls") == 0) {
 		name = "Linear Search";
 		//cardinal_tree_ls ct(letts2, &b, &info);
 		cardinal_tree_ls ct(&my_vector, &b, &info);
-		time = tester(&ct);
-		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size(), time, voc_size);
+		time_full_tree = test_label_child(&ct);
+		
+		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size(), time, voc_size, time_full_tree);
 		ct.get_size();
 	} else if (strcmp(type_wt, "bs") == 0) {
 		name = "Binary Search";
 		//cardinal_tree_bs ct(letts2, &b, &info);
 		cardinal_tree_bs ct(&my_vector, &b, &info);
-		time = tester(&ct);
-		//cout << "Test Degree." << endl; brute_test_degree(&b);
-		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size(), time, voc_size);
+		time_full_tree = test_label_child(&ct);
+		
+		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size(), time, voc_size, time_full_tree);
 		ct.get_size();
 	} else if (strcmp(type_wt, "ap") == 0) {
 		name = "Alphabet Partitioning";
 		//cardinal_tree<wt_ap<>> ct(letts2, &b, &info);
 		cardinal_tree<wt_ap<>> ct(my_vector, &b, &info);
-		time = tester(&ct);
-		//cout << "Test Degree." << endl; brute_test_degree(&b);
-		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size(), time, voc_size);
+		time_full_tree = test_label_child(&ct);
+	
+		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size(), time, voc_size, time_full_tree);
 		ct.get_size();
 	}
 	cout << endl;

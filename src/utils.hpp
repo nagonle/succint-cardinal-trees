@@ -148,12 +148,11 @@ void test_label(TYPE * ct) {
 		}
 	}
 }
-
-
+/*
 template<class TYPE>
 void test_label_child(TYPE * ct) {
 	size_t x;
-	char alpha; 
+	uint8_t alpha; 
 	size_t label_child_t;
 	for(size_t j=0; j<ct->degree(1); j++) {
 		alpha = ct->label(1, j+1);
@@ -173,7 +172,7 @@ void test_label_child(TYPE * ct) {
 		}
 	}
 }
-
+*/
 
 template<class TYPE>
 void test_label_reverse(TYPE * ct) {
