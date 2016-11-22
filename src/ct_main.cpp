@@ -142,7 +142,7 @@ int main(int argc, char *argv[]) {
 	return 0;
 }
 
-void print_output(string structure, char *name_letts, bool check_data, size_t total_nodes, size_t bp_size, double time, size_t voc_size, long double time_full_tree) {
+void print_output(string structure, char *name_letts, bool check_data, size_t total_nodes, size_t bp_size, double time, size_t voc_size, double time_full_tree) {
 	//cout << "########## TEST [" << structure << "] on [" << name_letts << "] ##########" << endl;
 	//cout << "[DEBUG] Check data: " << check_data << endl;
 	//cout << "[Tree Info] Total nodes: " << total_nodes << endl;
@@ -271,6 +271,7 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 		name = "Huffman Wavelet Tree";
 		//cardinal_tree<wt_huff<>> ct(letts2, &b, &info);
 		cardinal_tree<wt_huff<>> ct(my_vector, &b, &info);
+		time = tester(&ct);
 		time_full_tree = test_label_child(&ct);
 		//test_label_child(&ct);
 		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size(), time, voc_size, time_full_tree);
@@ -279,6 +280,7 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 		name = "Linear Search";
 		//cardinal_tree_ls ct(letts2, &b, &info);
 		cardinal_tree_ls ct(&my_vector, &b, &info);
+		time = tester(&ct);
 		time_full_tree = test_label_child(&ct);
 		
 		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size(), time, voc_size, time_full_tree);
@@ -287,6 +289,7 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 		name = "Binary Search";
 		//cardinal_tree_bs ct(letts2, &b, &info);
 		cardinal_tree_bs ct(&my_vector, &b, &info);
+		time = tester(&ct);
 		time_full_tree = test_label_child(&ct);
 		
 		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size(), time, voc_size, time_full_tree);
@@ -295,6 +298,7 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 		name = "Alphabet Partitioning";
 		//cardinal_tree<wt_ap<>> ct(letts2, &b, &info);
 		cardinal_tree<wt_ap<>> ct(my_vector, &b, &info);
+		time = tester(&ct);
 		time_full_tree = test_label_child(&ct);
 	
 		print_output(name, name_letts, check_data(&b, letts2, total_nodes), total_nodes, b.size(), time, voc_size, time_full_tree);
