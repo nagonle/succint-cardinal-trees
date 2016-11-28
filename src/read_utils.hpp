@@ -1,6 +1,7 @@
 #ifndef INCLUDED_READ_UTILS
 #define INCLUDED_READ_UTILS
 #include <sdsl/bit_vectors.hpp>
+#include <sdsl/int_vector.hpp>
 #include <sdsl/bp_support.hpp>
 #include <sdsl/wavelet_trees.hpp>
 #include <vector>
@@ -11,7 +12,8 @@ using namespace sdsl;
 typedef unsigned char uchar;
 
 // Check all data read.
-extern bool check_data(bit_vector *b, string& letts, size_t total_nodes);
+extern bool check_data(bit_vector *b, int_vector<> *letts, size_t total_nodes);
+//extern bool check_data(bit_vector *b, string& letts, size_t total_nodes);
 
 // vocabulary_size: Return the count of distinc characters.
 extern size_t vocabulary_size(string& letts);
@@ -24,6 +26,9 @@ extern void read_bp(char* name_file, char **bp, uint nodes);
 
 // check_balanced: return true if bp contain a balanced sequence of parentheses.
 extern bool check_balanced(bit_vector *bp);
+
+// count_parentheses: return true if bp contain a balanced sequence of parentheses.
+extern bool count_parentheses(bit_vector *bp); 
 
 // bp_string_to_bit_vector: convert bp sequence in a sequence of 1's and 0's. It store in b.
 extern void bp_string_to_bit_vector(char *bp, bit_vector *b); 

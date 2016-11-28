@@ -28,7 +28,7 @@ template <class A_Type> class cardinal_tree
 		//string seq;
 		bit_vector *b;
   	public:
-		cardinal_tree(string seq_, bit_vector * bp, vector<int> * info_) {
+		/*cardinal_tree(string seq_, bit_vector * bp, vector<int> * info_) {
 			nodes = (*bp).size() / 2;
 			letts = new A_Type();
 			//seq = seq_;
@@ -40,24 +40,20 @@ template <class A_Type> class cardinal_tree
 			tree_s1 = new bit_vector::select_1_type(bp);
 			info = info_;
 			b = bp;
-			//cout << "[Constructor] bp size: " << tree->size() << endl;
-			//cout << "[Constructor] letss size: " << letts->size() << endl;
-		}
+		}*/
 		
 		cardinal_tree(int_vector<> seq_, bit_vector * bp, vector<int> * info_) {
 			nodes = (*bp).size() / 2;
 			letts = new A_Type();
-			//seq = seq_;
+
 			// Inicializar sequence.
 			construct_im(*letts, seq_, 0); // Revisar "1"
 			// Inicializar tree BP.
 			tree = new bp_support_sada<t_sml_blk, t_med_deg, rank_support_v5<0>, bit_vector::select_0_type>(bp);  // <- pointer to b
-			//tree = new bp_support_gg<nearest_neighbour_dictionary<30>, rank_support_v5<0>, bit_vector::select_0_type, 840>(bp);
+
 			tree_s1 = new bit_vector::select_1_type(bp);
 			info = info_;
 			b = bp;
-			//cout << "[Constructor] bp size: " << tree->size() << endl;
-			//cout << "[Constructor] letss size: " << letts->size() << endl;
 		}
 
 		char get_bp(size_t x) {
@@ -65,11 +61,11 @@ template <class A_Type> class cardinal_tree
 			return ')';
 		}
 
-		size_t get_bp_size() {
+		size_t get_bp_count() {
 			return tree->size();
 		}
 
-		size_t get_letts_size() {
+		size_t get_letts_count() {
 			return letts->size();
 		}
 	
@@ -171,20 +167,6 @@ template <class A_Type> class cardinal_tree
 
 		// child: return position of i-th child (i=1..I). 
 		size_t child(size_t x, size_t i) {
-			/*
-			cout << "========================================================" << endl;
-			cout << "|                   [DEBUG CHILD]                      |" << endl;
-			cout << "========================================================" << endl;
-			cout << "x: " << x << endl;
-			cout << "tree_rank0(x): " << tree_rank0(x) << endl;
-			cout << "tree_select0(tree_rank0(x) + 1): " << tree_select0(tree_rank0(x) + 1) << endl;
-
-			cout << "tree[tree_select0(tree_rank0(x)): " << (*b)[tree_select0(tree_rank0(x) + 1)] << endl;
-			cout << "i: " << i << endl;
-			cout << "tree_select0(tree_rank0(x) + 1) - i: " << tree_select0(tree_rank0(x) + 1) - i << endl;
-			cout << "find_close(·): " << tree->find_close(tree_select0(tree_rank0(x) + 1) - i) << endl;
-			cout << "find_close(1): " << tree->find_close(1) << endl;
-			*/
 			return tree->find_close(tree_select0(tree_rank0(x) + 1) - i) + 1;
 		}
 
@@ -235,19 +217,16 @@ template <class A_Type> class cardinal_tree
 		// get_size: Return the size of the whole cardinal tree, including bp structure
 		// rank/select structure for symbols.
 		size_t get_size() {
-			//cout << "letts sizeof: " << sizeof(*letts) << endl;
-			//cout << "letts size: " <<  letts->size() << endl;
-			//cout << "parentheses sizeof: " << sizeof(*tree) << endl;
-			//cout << "parentheses size: " << tree->size() << endl;
-			//cout << "select_1 sizeof: " << sizeof(*tree_s1) << endl;
-			//
-			//cout << "tree_s1 size_in_bytes: " << size_in_bytes(*tree_s1) << endl;
-			//cout << "tree size_in_bytes: " << size_in_bytes(*tree) << endl;
-			//cout << "letts size_in_bytes: " << size_in_bytes(*letts) << endl;
-			cout << size_in_bytes(*tree_s1) << "|" << size_in_bytes(*tree) << "|" << size_in_bytes(*letts) << "|";
-			//
-			//cout << "select_1 size: " << tree_s1->size() << endl;
+			//cout << size_in_bytes(*tree_s1) + size_in_bytes(*tree) << "|" << size_in_bytes(*letts) << "|";
 			return letts->size() + tree->size() + sizeof(*tree_s1);
+		}
+
+		size_t get_tree_size() {
+			return size_in_bytes(*tree_s1) + size_in_bytes(*tree);
+		} 
+
+		size_t get_letts_size() {
+			return size_in_bytes(*letts);
 		}
 
 		~cardinal_tree() {delete tree; delete letts;}

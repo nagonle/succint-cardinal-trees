@@ -35,11 +35,11 @@ class cardinal_tree_bs {
 			if ((*b)[x] == 1) return '(';
 			return ')';
 		}
-		size_t get_bp_size() {
+		size_t get_bp_count() {
 			return tree->size();
 		}
 
-		size_t get_letts_size() {
+		size_t get_letts_count() {
 			return (*letts).size();
 		}
 	
@@ -165,11 +165,18 @@ class cardinal_tree_bs {
 		// get_binary_size: Return the size of the whole cardinal tree, including bp structure
 		// Here is not use a rank/select structure for symbols, so it's not considered in size.
 		size_t get_size() {
-			cout << size_in_bytes(*tree_s1) << "|" << size_in_bytes(*tree) << "|" << (*letts).size() << "|";
+			cout << size_in_bytes(*tree_s1) + size_in_bytes(*tree) << "|" << (*letts).size() << "|";
 			//return letts.size() + sizeof(*tree) + sizeof(*tree_s1);
 			return 0;
 		}
 
+		size_t get_tree_size() {
+			return size_in_bytes(*tree_s1) + size_in_bytes(*tree);
+		} 
+
+		size_t get_letts_size() {
+			return size_in_bytes(*letts);
+		}
 		~cardinal_tree_bs() {delete tree;}
 };
 

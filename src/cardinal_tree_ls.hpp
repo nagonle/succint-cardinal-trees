@@ -35,11 +35,11 @@ class cardinal_tree_ls {
 			if ((*b)[x] == 1) return '(';
 			return ')';
 		}
-		size_t get_bp_size() {
+		size_t get_bp_count() {
 			return tree->size();
 		}
 
-		size_t get_letts_size() {
+		size_t get_letts_count() {
 			return (*letts).size();
 		}
 	
@@ -166,7 +166,7 @@ class cardinal_tree_ls {
 			//cout << "tree (select1) size_in_bytes: " << size_in_bytes(*tree_s1) << endl;
 			//cout << "tree size_in_bytes: " << size_in_bytes(*tree) << endl;
 			//cout << "letts size_in_bytes: " << letts.size() << endl;
-			cout << size_in_bytes(*tree_s1) << "|" << size_in_bytes(*tree) << "|" << (*letts).size() << "|";
+			cout << size_in_bytes(*tree_s1) + size_in_bytes(*tree) << "|" << (*letts).size() << "|";
 			//cout << "*labels: " <<  letts.size() << endl;
 			//cout << "parentheses: " << sizeof(*tree) << endl;
 			//cout << "select_1: " << sizeof(*tree_s1) << endl;
@@ -175,6 +175,13 @@ class cardinal_tree_ls {
 			return 0;
 		}
 
+		size_t get_tree_size() {
+			return size_in_bytes(*tree_s1) + size_in_bytes(*tree);
+		} 
+
+		size_t get_letts_size() {
+			return size_in_bytes(*letts);
+		}
 		~cardinal_tree_ls() {delete tree;}
 };
 
