@@ -16,7 +16,7 @@ extern bool check_data(bit_vector *b, int_vector<> *letts, size_t total_nodes);
 //extern bool check_data(bit_vector *b, string& letts, size_t total_nodes);
 
 // vocabulary_size: Return the count of distinc characters.
-extern size_t vocabulary_size(string& letts);
+extern size_t vocabulary_size(int_vector<> *letts);
 
 // read_letts: read a file that contains symbols and number of nodes.
 extern uint read_letts(char *name_file, uint8_t **letts); 

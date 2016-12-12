@@ -18,11 +18,11 @@ bool check_data(bit_vector *b, int_vector<> *letts, size_t total_nodes) {
 	return false;
 }
 
-size_t vocabulary_size(string& letts) {
+size_t vocabulary_size(int_vector<> *letts) {
 	size_t count = 0;
-	set<char> voc;
-	for (size_t i=0; i<letts.size(); i++) {
-		voc.insert(letts[i]);
+	set<uint8_t> voc;
+	for (size_t i=0; i<letts->size(); i++) {
+		voc.insert((*letts)[i]);
 	}
 	count = voc.size();
 	return count;

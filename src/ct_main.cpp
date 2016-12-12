@@ -47,6 +47,7 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 	int_vector<> my_vector(total_symbols, 0, 8);
 	for (int i=0; i<total_symbols; i++) my_vector[i] = letts[i];
 
+	voc_size = vocabulary_size(&my_vector);
 	string check_status;
 	if (check_data(&b, &my_vector, total_nodes) == true) check_status = "OK";
 	else check_status = "FAILED"; 
@@ -69,30 +70,40 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 		time_random = tester(&ct);
 		time = new_test_label_child(&ct);
 		time_full_tree = test_label_child(&ct);
+
+		print_output(name, name_letts, check_status, ct.get_bp_count(), ct.get_letts_count(), voc_size, time_random, time_full_tree, time, ct.get_letts_size(), ct.get_tree_size());
 	} else if (strcmp(type_wt, "wth") == 0) {
 		name = "Huffman Wavelet Tree";
 		cardinal_tree<wt_huff<>> ct(my_vector, &b, &info);
 		time_random = tester(&ct);
 		time = new_test_label_child(&ct);
 		time_full_tree = test_label_child(&ct);
+
+		print_output(name, name_letts, check_status, ct.get_bp_count(), ct.get_letts_count(), voc_size, time_random, time_full_tree, time, ct.get_letts_size(), ct.get_tree_size());
 	} else if (strcmp(type_wt, "ls") == 0) {
 		name = "Linear Search";
 		cardinal_tree_ls ct(&my_vector, &b, &info);
 		time_random = tester(&ct);
 		time = new_test_label_child(&ct);
 		time_full_tree = test_label_child(&ct);
+
+		print_output(name, name_letts, check_status, ct.get_bp_count(), ct.get_letts_count(), voc_size, time_random, time_full_tree, time, ct.get_letts_size(), ct.get_tree_size());
 	} else if (strcmp(type_wt, "bs") == 0) {
 		name = "Binary Search";
 		cardinal_tree_bs ct(&my_vector, &b, &info);
 		time_random = tester(&ct);
 		time = new_test_label_child(&ct);
 		time_full_tree = test_label_child(&ct);
+
+		print_output(name, name_letts, check_status, ct.get_bp_count(), ct.get_letts_count(), voc_size, time_random, time_full_tree, time, ct.get_letts_size(), ct.get_tree_size());
 	} else if (strcmp(type_wt, "ap") == 0) {
 		name = "Alphabet Partitioning";
 		cardinal_tree<wt_ap<>> ct(my_vector, &b, &info);
 		time_random = tester(&ct);
 		time = new_test_label_child(&ct);
 		time_full_tree = test_label_child(&ct);
+
+		print_output(name, name_letts, check_status, ct.get_bp_count(), ct.get_letts_count(), voc_size, time_random, time_full_tree, time, ct.get_letts_size(), ct.get_tree_size());
 	}
 }
 
