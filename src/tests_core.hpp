@@ -64,8 +64,12 @@ double new_test_label_child(TYPE * ct) {
 	size_t queries = 0;
 	size_t degree;
 	size_t x = 0;
+	size_t begin = 1;
 	while (queries < 100000) {
-		if (x > total_nodes) x = 1;
+		if (x > total_nodes) {
+			begin++;
+			x = begin;
+		}
 		degree = ct->degree(node);
 		while (degree < 1) {
 			x += jump;
