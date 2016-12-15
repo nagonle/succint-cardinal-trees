@@ -38,7 +38,7 @@ uint read_letts(char *name_file, uint8_t **letts) {
 	in.read((char*)&nodes, sizeof(uint));
 	symbols = nodes - 1;
 	// Read zero separator
-	in.read((char*)&tmp, sizeof(uint8_t));
+	in.read((char*)&tmp, sizeof(char));
 	(*letts) = (uint8_t*)malloc(symbols);
 	in.read((char*)*letts, sizeof(uint8_t)*symbols);
 	in.close();
@@ -136,13 +136,13 @@ bool exists(string seq, char c, size_t N) {
 }
 
 // replace_null: Search in seq occurrences for NULL character and replace it for char c.
-void replace_null(uint8_t *seq, char c, size_t N) {
+void replace_null(uint8_t *seq, uint8_t c, size_t N) {
 	for (size_t i=0; i<N; i++) {
 		if (seq[i] == 0) {
 			seq[i] = c;
 		}
 	}
-	seq[N] = '\0';
+	//seq[N] = '\0';
 }
 
 void replace_null2(char *seq, char c, size_t N) {

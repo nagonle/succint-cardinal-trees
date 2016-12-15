@@ -40,6 +40,6 @@ extern uint read_size(string name_file);
 extern bool exists(string seq, char c, size_t N); 
 
 // replace_null: Search in seq occurrences for NULL character and replace it for char c.
-extern void replace_null(uint8_t *seq, char c, size_t N); 
+extern void replace_null(uint8_t *seq, uint8_t c, size_t N); 
 
 #endif

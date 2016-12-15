@@ -53,7 +53,7 @@ template<class TYPE>
 double new_test_label_child(TYPE * ct) {
 	uint8_t alpha; 
 	size_t label_child_t;
-	size_t total_bp =  ct->get_bp_count();
+	size_t total_nodes =  ct->get_bp_count() / 2;
 
 	chrono::high_resolution_clock::time_point start_time, end_time;
 	chrono::duration<double> total_time; 
@@ -65,7 +65,7 @@ double new_test_label_child(TYPE * ct) {
 	size_t degree;
 	size_t x = 0;
 	while (queries < 100000) {
-		if (x > total_bp/2) x = 1;
+		if (x > total_nodes) x = 1;
 		degree = ct->degree(node);
 		while (degree < 1) {
 			x += jump;
@@ -73,7 +73,8 @@ double new_test_label_child(TYPE * ct) {
 			degree = ct->degree(node);
 		}
 
-		alpha = ct->label(node, 1);
+		//alpha = ct->label(node, 1);
+		alpha = ct->label(node, degree);
 		start_time = chrono::high_resolution_clock::now();
 		label_child_t = ct->label_child(node, alpha);
 		end_time = chrono::high_resolution_clock::now();

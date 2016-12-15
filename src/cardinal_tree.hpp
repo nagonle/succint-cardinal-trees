@@ -56,6 +56,10 @@ template <class A_Type> class cardinal_tree
 			b = bp;
 		}
 
+		uint8_t get_symbol(size_t x) {
+			return (*letts)[x];
+		}
+
 		char get_bp(size_t x) {
 			if ((*b)[x] == 1) return '(';
 			return ')';

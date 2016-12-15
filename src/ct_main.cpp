@@ -15,11 +15,18 @@
 #include "cardinal_tree_bs.hpp"
 #include "cardinal_tree_ls.hpp"
 #include "tests_core.hpp"
+#include <iomanip>
 using namespace std;
 using namespace sdsl;
 
 void print_output(string name_structure, char *name_dataset, string check_status, size_t bp_count, size_t letts_count, size_t voc_size, double time_random, double time_full_tree, double time, size_t letts_size, size_t tree_size) {
 	cout << name_dataset << "|" << check_status << "|" << name_structure << "|" << bp_count << "|" << letts_count << "|" << voc_size << "|" << time_random << "|" << time_full_tree << "|" << time << "|" << letts_size << "|" << tree_size << endl;
+}
+
+void print_dataset_info(size_t max_arity, double average_arity, size_t max_height, double average_height) {
+	cout << fixed;
+	cout << setprecision(2);
+	cout << max_arity << "|" << average_arity << "|" << max_height << "|" << average_height << endl;
 }
 
 void process_data(char *name_bp, char *name_letts, char *type_wt) {
@@ -42,7 +49,7 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 	vector<int> info;
 	info.push_back(42);
 
- 	replace_null(letts, (char)1, total_symbols);
+ 	replace_null(letts, (uint8_t)1, total_symbols);
 
 	int_vector<> my_vector(total_symbols, 0, 8);
 	for (int i=0; i<total_symbols; i++) my_vector[i] = letts[i];
@@ -104,6 +111,23 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 		time_full_tree = test_label_child(&ct);
 
 		print_output(name, name_letts, check_status, ct.get_bp_count(), ct.get_letts_count(), voc_size, time_random, time_full_tree, time, ct.get_letts_size(), ct.get_tree_size());
+	} else if (strcmp(type_wt, "describe") == 0) {
+		cardinal_tree<wt_blcd<>> ct(my_vector, &b, &info);
+		
+		//for (size_t i=0; i<ct.count_nodes()*2; i++) cout << ct.get_bp(i) << " "; cout << endl;
+		//test_label(&ct);
+		//for (size_t i=0; i<10; i++) cout << ct.get_symbol(i) << " "; cout << endl;
+		//for (size_t i=0; i<22; i++) cout << ct.get_bp(i) << " "; cout << endl;
+		//test_child(&ct);
+		//test_degree(&ct);
+
+		size_t max_arity = get_max_arity(&ct);
+		double average_arity = get_average_arity(&ct);
+		size_t tree_height = get_tree_height(&ct);
+		double sum_heights = 0, count_nodes = 0;
+		double tree_average_height = get_tree_average_height2(&ct, &sum_heights, &count_nodes);
+
+		print_dataset_info(max_arity, average_arity, tree_height, tree_average_height);
 	}
 }
 
