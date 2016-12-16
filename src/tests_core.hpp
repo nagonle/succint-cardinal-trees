@@ -50,7 +50,7 @@ double test_label_child(TYPE * ct) {
 }
 
 template<class TYPE>
-double new_test_label_child(TYPE * ct) {
+double new_test_label_child(TYPE * ct, size_t N=300000) {
 	uint8_t alpha; 
 	size_t label_child_t;
 	size_t total_nodes =  ct->get_bp_count() / 2;
@@ -65,7 +65,7 @@ double new_test_label_child(TYPE * ct) {
 	size_t degree;
 	size_t x = 0;
 	size_t begin = 1;
-	while (queries < 100000) {
+	while (queries < N) {
 		if (x > total_nodes) {
 			begin++;
 			x = begin;
@@ -89,11 +89,11 @@ double new_test_label_child(TYPE * ct) {
 		queries++;
 	}
 	double time = chrono::duration_cast<chrono::microseconds>(total_time).count();
-	return time/100000;
+	return time/N;
 }
 
 template<class type>
-double tester(type *ct, size_t N=100000, bool verbose=false) {
+double tester(type *ct, size_t N=300000, bool verbose=false) {
 	chrono::high_resolution_clock::time_point start_time, end_time;
 	chrono::duration<double> total_time;
 	size_t count, degree, node, ith_child, next_node;
