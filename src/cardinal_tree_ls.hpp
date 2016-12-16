@@ -11,6 +11,9 @@ using namespace sdsl;
 
 typedef unsigned char uchar;
 
+#define t_sml_blk 1024u
+#define t_med_deg 2048u
+
 class cardinal_tree_ls {
 	private:
 		int_vector<> *letts; // symbol sequence.

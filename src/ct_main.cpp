@@ -67,8 +67,11 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 		cardinal_tree<wt_gmr<>> ct(my_vector, &b, &info);
 
 		time_full_tree = test_label_child(&ct);
+		cout << "time_full_tree OK";
 		time = new_test_label_child(&ct);
+		cout << "time OK";
 		time_random = tester(&ct);
+		cout << "time random OK";
 
 		print_output(name, name_letts, check_status, ct.get_bp_count(), ct.get_letts_count(), voc_size, time_random, time_full_tree, time, ct.get_letts_size(), ct.get_tree_size());
 	} else if (strcmp(type_wt, "wt") == 0) {
@@ -76,8 +79,11 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 		cardinal_tree<wt_blcd<>> ct(my_vector, &b, &info);
 
 		time_full_tree = test_label_child(&ct);
+		cout << "time_full_tree OK";
 		time = new_test_label_child(&ct);
+		cout << "time OK";
 		time_random = tester(&ct);
+		cout << "time random OK";
 
 		print_output(name, name_letts, check_status, ct.get_bp_count(), ct.get_letts_count(), voc_size, time_random, time_full_tree, time, ct.get_letts_size(), ct.get_tree_size());
 	} else if (strcmp(type_wt, "wth") == 0) {
@@ -85,8 +91,11 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 		cardinal_tree<wt_huff<>> ct(my_vector, &b, &info);
 
 		time_full_tree = test_label_child(&ct);
+		cout << "time_full_tree OK";
 		time = new_test_label_child(&ct);
+		cout << "time OK";
 		time_random = tester(&ct);
+		cout << "time random OK";
 
 		print_output(name, name_letts, check_status, ct.get_bp_count(), ct.get_letts_count(), voc_size, time_random, time_full_tree, time, ct.get_letts_size(), ct.get_tree_size());
 	} else if (strcmp(type_wt, "ls") == 0) {
@@ -94,8 +103,11 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 		cardinal_tree_ls ct(&my_vector, &b, &info);
 
 		time_full_tree = test_label_child(&ct);
+		cout << "time_full_tree OK";
 		time = new_test_label_child(&ct);
+		cout << "time OK";
 		time_random = tester(&ct);
+		cout << "time random OK";
 
 		print_output(name, name_letts, check_status, ct.get_bp_count(), ct.get_letts_count(), voc_size, time_random, time_full_tree, time, ct.get_letts_size(), ct.get_tree_size());
 	} else if (strcmp(type_wt, "bs") == 0) {
@@ -103,8 +115,11 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 		cardinal_tree_bs ct(&my_vector, &b, &info);
 
 		time_full_tree = test_label_child(&ct);
+		cout << "time_full_tree OK";
 		time = new_test_label_child(&ct);
+		cout << "time OK";
 		time_random = tester(&ct);
+		cout << "time random OK";
 
 		print_output(name, name_letts, check_status, ct.get_bp_count(), ct.get_letts_count(), voc_size, time_random, time_full_tree, time, ct.get_letts_size(), ct.get_tree_size());
 	} else if (strcmp(type_wt, "ap") == 0) {
@@ -112,8 +127,11 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 		cardinal_tree<wt_ap<>> ct(my_vector, &b, &info);
 
 		time_full_tree = test_label_child(&ct);
+		cout << "time_full_tree OK";
 		time = new_test_label_child(&ct);
+		cout << "time OK";
 		time_random = tester(&ct);
+		cout << "time random OK";
 
 		print_output(name, name_letts, check_status, ct.get_bp_count(), ct.get_letts_count(), voc_size, time_random, time_full_tree, time, ct.get_letts_size(), ct.get_tree_size());
 	} else if (strcmp(type_wt, "describe") == 0) {
