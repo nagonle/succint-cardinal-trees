@@ -25,29 +25,22 @@ double test_label_child(TYPE * ct) {
 	size_t N = 0;
 	chrono::high_resolution_clock::time_point start_time, end_time;
 	chrono::duration<double> total_time; 
-	cout << "error1;";
 	for(size_t j=0; j<ct->degree(1); j++) {
 		alpha = ct->label(1, j+1);
-		cout << "error2;";
 		start_time = chrono::high_resolution_clock::now();
 		label_child_t = ct->label_child(1, alpha);
 		end_time = chrono::high_resolution_clock::now();
-		cout << "error3;";
 		total_time += end_time - start_time;
 		N++;
 	}
 
 	for (size_t i=1; i<ct->count_nodes(); i++) {
 		x = ct->tree_select0(i) + 1;
-		cout << "error4;";
 		for(size_t j=0; j<ct->degree(x); j++) {
-			cout << "error5;";
 			alpha = ct->label(x, j+1);
-			cout << "error6;";
 			start_time = chrono::high_resolution_clock::now();
 			label_child_t = ct->label_child(x, alpha);
 			end_time = chrono::high_resolution_clock::now();
-			cout << "error7;";
 			total_time += end_time - start_time;
 			N++;
 		}
@@ -91,17 +84,14 @@ double new_test_label_child(TYPE * ct, size_t N=300000) {
 		}
 
 		//alpha = ct->label(node, 1);
-		cout << "error1;";
 		alpha = ct->label(node, degree);
 		start_time = chrono::high_resolution_clock::now();
 		label_child_t = ct->label_child(node, alpha);
-		cout << "error2;";
 		end_time = chrono::high_resolution_clock::now();
 		total_time += end_time - start_time;
 
 		x+=jump;
 		node = ct->tree_select0(x) + 1;
-		cout << "error3;";
 		queries++;
 	}
 	double time = chrono::duration_cast<chrono::microseconds>(total_time).count();

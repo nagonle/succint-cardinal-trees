@@ -8,7 +8,7 @@
 #include <vector>
 
 //#define t_sml_blk 2018475u
-#define t_sml_blk 1024u
+#define t_sml_blk 2048u
 #define t_med_deg 2048u
 using namespace std;
 using namespace sdsl;
