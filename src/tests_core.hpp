@@ -26,9 +26,15 @@ double test_label_child(TYPE * ct) {
 	chrono::high_resolution_clock::time_point start_time, end_time;
 	chrono::duration<double> total_time; 
 	for(size_t j=0; j<ct->degree(1); j++) {
+		cout << "error0;";
 		alpha = ct->label(1, j+1);
+		cout << "error1;";
 		start_time = chrono::high_resolution_clock::now();
+		//cout << "error0";
 		label_child_t = ct->label_child(1, alpha);
+		//cout << "label bp:" << ct->get_bp(label_child_t);
+		//cout << "num:"<<label_child_t;
+		//cout << "error1";
 		end_time = chrono::high_resolution_clock::now();
 		total_time += end_time - start_time;
 		N++;
@@ -91,6 +97,11 @@ double new_test_label_child(TYPE * ct, size_t N=300000) {
 		total_time += end_time - start_time;
 
 		x+=jump;
+		if (x > total_nodes) {
+			begin++;
+			if (begin > total_nodes) begin = 1;
+			x = begin;
+		}
 		node = ct->tree_select0(x) + 1;
 		queries++;
 	}
@@ -102,6 +113,7 @@ template<class type>
 double tester(type *ct, size_t N=300000, bool verbose=false) {
 	chrono::high_resolution_clock::time_point start_time, end_time;
 	chrono::duration<double> total_time;
+	srand(0);
 	size_t count, degree, node, ith_child, next_node;
 	uint8_t label;
 	count = degree = 0;

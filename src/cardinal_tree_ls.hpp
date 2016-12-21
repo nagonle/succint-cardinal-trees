@@ -159,6 +159,11 @@ class cardinal_tree_ls {
 			size_t i = lineal_search(letts, position_symbols_begin, position_symbols_end, alpha);
 
 			i = i-position_symbols_begin+1;
+
+			size_t child_r = child(x, i);
+			//cout << "child(x,i):"<< child_r;
+			//cout << "bp:"<<get_bp(child_r)<<"bp-1:"<<get_bp(child_r-1);
+
 			return child(x, i); 
 		}
 

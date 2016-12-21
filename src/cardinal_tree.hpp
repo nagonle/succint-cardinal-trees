@@ -8,7 +8,7 @@
 #include <vector>
 
 //#define t_sml_blk 2018475u
-#define t_sml_blk 2048u
+#define t_sml_blk 1024u
 #define t_med_deg 2048u
 using namespace std;
 using namespace sdsl;
@@ -226,7 +226,7 @@ template <class A_Type> class cardinal_tree
 		}
 
 		size_t get_tree_size() {
-			return size_in_bytes(*tree_s1) + size_in_bytes(*tree);
+			return size_in_bytes(*tree);
 		} 
 
 		size_t get_letts_size() {

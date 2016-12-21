@@ -19,8 +19,8 @@
 using namespace std;
 using namespace sdsl;
 
-void print_output(string name_structure, char *name_dataset, string check_status, size_t bp_count, size_t letts_count, size_t voc_size, double time_random, double time_full_tree, double time, size_t letts_size, size_t tree_size) {
-	cout << name_dataset << "|" << check_status << "|" << name_structure << "|" << bp_count << "|" << letts_count << "|" << voc_size << "|" << time_random << "|" << time_full_tree << "|" << time << "|" << letts_size << "|" << tree_size << endl;
+void print_output(string name_structure, char *name_dataset, string check_status, size_t bp_count, size_t letts_count, size_t voc_size, double time_random, size_t letts_size, size_t tree_size) {
+	cout << name_dataset << "|" << check_status << "|" << name_structure << "|" << bp_count << "|" << letts_count << "|" << voc_size << "|" << time_random << "|" << letts_size << "|" << tree_size << "|" << ((letts_size+tree_size)*8)/(letts_count+1) << endl;
 }
 
 void print_dataset_info(size_t max_arity, double average_arity, size_t max_height, double average_height) {
@@ -66,76 +66,76 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 		name = "Golynski";
 		cardinal_tree<wt_gmr<>> ct(my_vector, &b, &info);
 
-		time_full_tree = test_label_child(&ct);
-		cout << "time_full_tree OK";
-		time = new_test_label_child(&ct);
-		cout << "time OK";
+		//time_full_tree = test_label_child(&ct);
+		//cout << "time_full_tree OK";
+		//time = new_test_label_child(&ct);
+		//cout << "time OK";
 		time_random = tester(&ct);
-		cout << "time random OK";
+		//cout << "time random OK";
 
-		print_output(name, name_letts, check_status, ct.get_bp_count(), ct.get_letts_count(), voc_size, time_random, time_full_tree, time, ct.get_letts_size(), ct.get_tree_size());
+		print_output(name, name_letts, check_status, ct.get_bp_count(), ct.get_letts_count(), voc_size, time_random, ct.get_letts_size(), ct.get_tree_size());
 	} else if (strcmp(type_wt, "wt") == 0) {
 		name = "Balanced Wavelet Tree";
 		cardinal_tree<wt_blcd<>> ct(my_vector, &b, &info);
 
-		time_full_tree = test_label_child(&ct);
-		cout << "time_full_tree OK";
-		time = new_test_label_child(&ct);
-		cout << "time OK";
+		//time_full_tree = test_label_child(&ct);
+		//cout << "time_full_tree OK";
+		//time = new_test_label_child(&ct);
+		//cout << "time OK";
 		time_random = tester(&ct);
-		cout << "time random OK";
+		//cout << "time random OK";
 
-		print_output(name, name_letts, check_status, ct.get_bp_count(), ct.get_letts_count(), voc_size, time_random, time_full_tree, time, ct.get_letts_size(), ct.get_tree_size());
+		print_output(name, name_letts, check_status, ct.get_bp_count(), ct.get_letts_count(), voc_size, time_random, ct.get_letts_size(), ct.get_tree_size());
 	} else if (strcmp(type_wt, "wth") == 0) {
 		name = "Huffman Wavelet Tree";
 		cardinal_tree<wt_huff<>> ct(my_vector, &b, &info);
 
-		time_full_tree = test_label_child(&ct);
-		cout << "time_full_tree OK";
-		time = new_test_label_child(&ct);
-		cout << "time OK";
+		//time_full_tree = test_label_child(&ct);
+		//cout << "time_full_tree OK";
+		//time = new_test_label_child(&ct);
+		//cout << "time OK";
 		time_random = tester(&ct);
-		cout << "time random OK";
+		//cout << "time random OK";
 
-		print_output(name, name_letts, check_status, ct.get_bp_count(), ct.get_letts_count(), voc_size, time_random, time_full_tree, time, ct.get_letts_size(), ct.get_tree_size());
+		print_output(name, name_letts, check_status, ct.get_bp_count(), ct.get_letts_count(), voc_size, time_random, ct.get_letts_size(), ct.get_tree_size());
 	} else if (strcmp(type_wt, "ls") == 0) {
 		name = "Linear Search";
 		cardinal_tree_ls ct(&my_vector, &b, &info);
 
-		time_full_tree = test_label_child(&ct);
-		cout << "time_full_tree OK";
-		time = new_test_label_child(&ct);
-		cout << "time OK";
+		//time_full_tree = test_label_child(&ct);
+		//cout << "time_full_tree OK";
+		//time = new_test_label_child(&ct);
+		//cout << "time OK";
 		time_random = tester(&ct);
-		cout << "time random OK";
+		//cout << "time random OK";
 
-		print_output(name, name_letts, check_status, ct.get_bp_count(), ct.get_letts_count(), voc_size, time_random, time_full_tree, time, ct.get_letts_size(), ct.get_tree_size());
+		print_output(name, name_letts, check_status, ct.get_bp_count(), ct.get_letts_count(), voc_size, time_random, ct.get_letts_size(), ct.get_tree_size());
 	} else if (strcmp(type_wt, "bs") == 0) {
 		name = "Binary Search";
 		cardinal_tree_bs ct(&my_vector, &b, &info);
 
-		time_full_tree = test_label_child(&ct);
-		cout << "time_full_tree OK";
-		time = new_test_label_child(&ct);
-		cout << "time OK";
+		//time_full_tree = test_label_child(&ct);
+		//cout << "time_full_tree OK";
+		//time = new_test_label_child(&ct);
+		//cout << "time OK";
 		time_random = tester(&ct);
-		cout << "time random OK";
+		//cout << "time random OK";
 
-		print_output(name, name_letts, check_status, ct.get_bp_count(), ct.get_letts_count(), voc_size, time_random, time_full_tree, time, ct.get_letts_size(), ct.get_tree_size());
+		print_output(name, name_letts, check_status, ct.get_bp_count(), ct.get_letts_count(), voc_size, time_random, ct.get_letts_size(), ct.get_tree_size());
 	} else if (strcmp(type_wt, "ap") == 0) {
 		name = "Alphabet Partitioning";
 		cardinal_tree<wt_ap<>> ct(my_vector, &b, &info);
 
-		time_full_tree = test_label_child(&ct);
-		cout << "time_full_tree OK";
-		time = new_test_label_child(&ct);
-		cout << "time OK";
+		//time_full_tree = test_label_child(&ct);
+		//cout << "time_full_tree OK";
+		//time = new_test_label_child(&ct);
+		//cout << "time OK";
 		time_random = tester(&ct);
-		cout << "time random OK";
+		//cout << "time random OK";
 
-		print_output(name, name_letts, check_status, ct.get_bp_count(), ct.get_letts_count(), voc_size, time_random, time_full_tree, time, ct.get_letts_size(), ct.get_tree_size());
+		print_output(name, name_letts, check_status, ct.get_bp_count(), ct.get_letts_count(), voc_size, time_random, ct.get_letts_size(), ct.get_tree_size());
 	} else if (strcmp(type_wt, "describe") == 0) {
-		cardinal_tree<wt_blcd<>> ct(my_vector, &b, &info);
+		cardinal_tree<wt_gmr<>> ct(my_vector, &b, &info);
 
 		size_t max_arity = get_max_arity(&ct);
 		double average_arity = get_average_arity(&ct);
@@ -143,6 +143,7 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 		double sum_heights = 0, count_nodes = 0;
 		double tree_average_height = get_tree_average_height2(&ct, &sum_heights, &count_nodes);
 
+		//test_label(&ct);
 		print_dataset_info(max_arity, average_arity, tree_height, tree_average_height);
 	}
 }

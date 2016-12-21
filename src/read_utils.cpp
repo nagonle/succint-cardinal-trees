@@ -46,6 +46,24 @@ uint read_letts(char *name_file, uint8_t **letts) {
 
 	return nodes;
 }
+
+uint64_t read_letts32(char *name_file, uint32_t **letts) {
+	uint nodes, symbols;
+	char tmp[2];
+	ifstream in;
+	in.open(name_file, ios::in | ios::binary);
+	// Read total nodes
+	in.read((char*)&nodes, sizeof(uint64_t));
+	symbols = nodes - 1;
+	// Read zero separator
+	in.read((char*)&tmp, sizeof(uint32_t));
+	(*letts) = (uint32_t*)malloc(symbols);
+	in.read((char*)*letts, sizeof(uint32_t)*symbols);
+	in.close();
+
+	return nodes;
+}
+
 uint read_letts2(char *name_file, char **letts) {
 	uint nodes, symbols;
 	char tmp[2];

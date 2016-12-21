@@ -21,6 +21,8 @@ extern size_t vocabulary_size(int_vector<> *letts);
 // read_letts: read a file that contains symbols and number of nodes.
 extern uint read_letts(char *name_file, uint8_t **letts); 
 
+extern uint64_t read_letts32(char *name_file, uint32_t **letts); 
+
 // read_bp: store in bp a sequence of bp in file name_file
 extern void read_bp(char* name_file, char **bp, uint nodes);
 
