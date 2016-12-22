@@ -110,7 +110,7 @@ double new_test_label_child(TYPE * ct, size_t N=300000) {
 }
 
 template<class type>
-double tester(type *ct, size_t N=300000, bool verbose=false) {
+double tester(type *ct, size_t N=100000, bool verbose=false) {
 	chrono::high_resolution_clock::time_point start_time, end_time;
 	chrono::duration<double> total_time;
 	srand(0);

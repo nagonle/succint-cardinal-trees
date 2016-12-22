@@ -22,7 +22,6 @@ template <class A_Type> class cardinal_tree
 		//bp_support_sada<256u, 32u, rank_support_v5<0>, bit_vector::select_0_type> *tree; // tree sequence (DFUDS) 
 		bp_support_sada<t_sml_blk, t_med_deg, rank_support_v5<0>, bit_vector::select_0_type> *tree; // tree sequence (DFUDS) 
 		//bp_support_gg<nearest_neighbour_dictionary<30>, rank_support_v5<0>, bit_vector::select_0_type, 840> *tree;
-		bit_vector::select_1_type *tree_s1;
 		vector<int> *info; 
 		size_t nodes;
 		//string seq;
@@ -51,7 +50,6 @@ template <class A_Type> class cardinal_tree
 			// Inicializar tree BP.
 			tree = new bp_support_sada<t_sml_blk, t_med_deg, rank_support_v5<0>, bit_vector::select_0_type>(bp);  // <- pointer to b
 
-			tree_s1 = new bit_vector::select_1_type(bp);
 			info = info_;
 			b = bp;
 		}
@@ -90,18 +88,13 @@ template <class A_Type> class cardinal_tree
 		}
 
 		// tree_rank1: return #1's until n inclusive.
-		size_t tree_rank1(size_t x) {
-			return x - tree->rank(x) + 1;
-		}
-		
+        size_t tree_rank1(size_t x) {
+        	return x - tree->rank(x) + 1;
+        }
+
 		// tree_select0: return x-th '0'.
 		size_t tree_select0(size_t x) {
 			return tree->select(x);
-		}
-
-		// tree_select1: return x-th '1'.
-		size_t tree_select1(size_t x) {
-			return (*tree_s1)(x);
 		}
 
 		// Symbols operations.
@@ -222,7 +215,7 @@ template <class A_Type> class cardinal_tree
 		// rank/select structure for symbols.
 		size_t get_size() {
 			//cout << size_in_bytes(*tree_s1) + size_in_bytes(*tree) << "|" << size_in_bytes(*letts) << "|";
-			return letts->size() + tree->size() + sizeof(*tree_s1);
+			return letts->size() + tree->size(); 
 		}
 
 		size_t get_tree_size() {
