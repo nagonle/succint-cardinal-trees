@@ -20,7 +20,7 @@ using namespace std;
 using namespace sdsl;
 
 void print_output(string name_structure, char *name_dataset, string check_status, size_t bp_count, size_t letts_count, size_t voc_size, double time_random, size_t letts_size, size_t tree_size) {
-	cout << name_dataset << "|" << check_status << "|" << name_structure << "|" << bp_count << "|" << letts_count << "|" << voc_size << "|" << (double)letts_size/letts_count << "|" << (double)tree_size/(letts_count+1) << "|" << ((letts_size+tree_size)*8)/(letts_count+1) << "|" << time_random << endl;
+	cout << name_dataset << "|" << check_status << "|" << name_structure << "|" << bp_count << "|" << letts_count << "|" << voc_size << "|" << (double)letts_size/letts_count << "|" << (double)tree_size/(letts_count+1) << "|" << (double)((letts_size+tree_size)*8)/(letts_count+1) << "|" << time_random << endl;
 }
 
 void print_dataset_info(size_t max_arity, double average_arity, size_t max_height, double average_height) {
