@@ -18,9 +18,6 @@ bool check_data(bit_vector *b, int_vector<> *letts, size_t total_nodes) {
 	return false;
 }
 
-
-
-
 // read_bp: Store sequence of balanced parentheses in bp.
 void read_bp(char* name_file, char **bp, uint nodes) {
 	size_t size_block = nodes * 2;
@@ -45,24 +42,6 @@ bool check_balanced(bit_vector *bp) {
 	}
 
 	if (bp_stack.empty() == true) return true;
-	return false;
-}
-
-bool count_parentheses(bit_vector *bp) {
-	size_t open = 0, close = 0;
-	bit_vector values = {0, 1};
-	for (size_t i=0; i<bp->size(); i++) {
-		if ((*bp)[i] == 1u) open++;
-		else if ((*bp)[i] == 0u) close++;
-		if (open < close){
-			cout << "open: " << open << endl;
-			cout << "close: " << close << endl;
-			return false;
-		}
-	}
-	cout << "open: " << open << endl;
-	cout << "close: " << close << endl;
-	if (open == close) return true;
 	return false;
 }
 

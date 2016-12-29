@@ -5,9 +5,7 @@
 #include <sdsl/bp_support.hpp>
 #include <sdsl/wavelet_trees.hpp>
 #include <sdsl/int_vector.hpp>
-#include <vector>
 
-//#define t_sml_blk 2018475u
 #define t_sml_blk 1024u
 #define t_med_deg 2048u
 using namespace std;
@@ -31,9 +29,9 @@ class cardinal_tree
 			nodes = (*bp).size() / 2;
 			letts = new seq_type();
 
-			// Inicializar sequence.
+			// Init sequence.
 			construct_im(*letts, seq_, 0); 
-			// Inicializar tree BP.
+			// Init tree BP.
 			tree = new bp_support_sada<t_sml_blk, t_med_deg, rank_support_v5<0>, bit_vector::select_0_type>(bp); 
 
 			info = info_;
@@ -154,21 +152,20 @@ class cardinal_tree
 
 		// label_child: return the position of the child of node x, labeled with alpha.
 		size_t label_child(size_t x, size_type alpha) {
-			// symbols_previous_count: # simbolos predecesores. Que en el arreglo de simbolos
-			// corresponde a la posicion donde empiezan los simbolos del nodo x.
+			// symbols_previous_count: # predecessor symbols. In symbols array this represent
+			// position where begin the symbols of node x.
 			size_t position_symbols_begin;
 			if (x == 1) {
 				position_symbols_begin = 0;
 			}
 			else position_symbols_begin = tree_rank1(x - 1) - 1; 
-			//cout << "[DEBUG][label_child] postion_symbols_begin: " << position_symbols_begin << " ";
 			size_t alpha_previous_count; 
 			if (position_symbols_begin == 0) alpha_previous_count = 0;
 			else alpha_previous_count = label_rank(position_symbols_begin, alpha);
-			// position_next_alpha: posicion de la siguiente aparicion de alpha (alpha buscado)
+			// position_next_alpha: position of next apparition of searched alpha.
 			size_t position_alpha = label_select(alpha_previous_count + 1, alpha); 
+			// substract both positions, where symbols begin and the position of searched alpha.
 			size_t i = position_alpha - position_symbols_begin + 1;
-			// restar ambas posiciones, Donde inician los simbolos del nodo y la posición del alpha buscado.
 			return child(x, i); 
 		}
 

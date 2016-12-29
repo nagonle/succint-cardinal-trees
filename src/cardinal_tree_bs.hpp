@@ -13,8 +13,10 @@ typedef unsigned char uchar;
 
 class cardinal_tree_bs {
 	private:
-		int_vector<> *letts; // symbol sequence.
-		bp_support_sada<t_sml_blk, t_med_deg, rank_support_v5<0>, bit_vector::select_0_type> *tree; // tree sequence (DFUDS) 
+		// Symbol sequence.
+		int_vector<> *letts; 
+		// Tree sequence (DFUDS). 
+		bp_support_sada<t_sml_blk, t_med_deg, rank_support_v5<0>, bit_vector::select_0_type> *tree; 
 		vector<int> *info; 
 		size_t nodes;
 		bit_vector *b;
@@ -22,8 +24,8 @@ class cardinal_tree_bs {
 		cardinal_tree_bs(int_vector<> *seq_, bit_vector * bp, vector<int> * info_) {
 			nodes = (*bp).size() / 2;
 
-			// Inicializar tree BP.
-			tree = new bp_support_sada<t_sml_blk, t_med_deg, rank_support_v5<0>, bit_vector::select_0_type>(bp);  // <- pointer to b
+			// Init tree BP.
+			tree = new bp_support_sada<t_sml_blk, t_med_deg, rank_support_v5<0>, bit_vector::select_0_type>(bp);
 			info = info_;
 			b = bp;
 			letts = seq_;
@@ -158,9 +160,7 @@ class cardinal_tree_bs {
 		// get_binary_size: Return the size of the whole cardinal tree, including bp structure
 		// Here is not use a rank/select structure for symbols, so it's not considered in size.
 		size_t get_size() {
-			cout << size_in_bytes(*tree) << "|" << (*letts).size() << "|";
-			//return letts.size() + sizeof(*tree) + sizeof(*tree_s1);
-			return 0;
+			return size_in_bytes(*tree) + size_in_bytes(*letts);
 		}
 
 		// get_tree_size: Return size in bytes of the structure that support parentheses.

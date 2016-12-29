@@ -43,15 +43,15 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 	total_nodes = read_letts<Size_Type, Count_Type>(name_letts, &letts);
 	total_symbols = total_nodes - 1;
 
-	
+	// Construct symbols sequence.
 	int_vector<> sequence_vector(total_symbols, 0, sizeof(Size_Type)*8);
-	for (int i=0; i<total_symbols; i++) sequence_vector[i] = letts[i];
-
 	replace_null<Size_Type>(letts, (Size_Type)1, total_symbols);
+	for (int i=0; i<total_symbols; i++) sequence_vector[i] = letts[i];
 
 	// Read sequence of parentheses and store in bp.
 	read_bp(name_bp, &bp, total_nodes);
 
+	// Construct parentheses sequence.
 	bit_vector b(total_nodes*2);
 	bp_string_to_bit_vector(bp, &b);
 
@@ -60,12 +60,14 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 	info.push_back(42);
 
 
-
+	// Get vocabulary size.
 	voc_size = vocabulary_size<Size_Type>(&sequence_vector);
+	// Check consistency on data.
 	string check_status;
 	if (check_data(&b, &sequence_vector, total_nodes) == true) check_status = "OK";
 	else check_status = "FAILED"; 
 
+	// Construct Cardinal Tree and run tests.
 	if (strcmp(type_wt, "gmr") == 0) {
 		name = "Golynski";
 		cardinal_tree<wt_gmr<>, Size_Type> ct(sequence_vector, &b, &info);
@@ -115,7 +117,7 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 		double average_arity = get_average_arity(&ct);
 		size_t tree_height = get_tree_height(&ct);
 		double sum_heights = 0, count_nodes = 0;
-		double tree_average_height = get_tree_average_height2(&ct, &sum_heights, &count_nodes);
+		double tree_average_height = get_tree_average_height(&ct, &sum_heights, &count_nodes);
 
 		print_dataset_info(max_arity, average_arity, tree_height, tree_average_height);
 	}

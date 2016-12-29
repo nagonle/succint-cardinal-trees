@@ -66,28 +66,7 @@ size_t get_tree_height(type * ct, size_t node=1, size_t height=0) {
 
 // average_tree_height: return the average tree height.
 template <class type>
-double get_tree_average_height(type * ct, vector<size_t> *list_height, size_t node=1, size_t height=0, size_t total_nodes=0) {
-	size_t node_degree = ct->degree(node);
-	size_t new_node;
-	if (total_nodes >= ct->count_nodes()) cout << "Nodes Count Exceeded. ";
-	if (node_degree == 0) {
-		list_height->push_back(height);
-		return height;
-	}
-	else {
-		height++;
-		for (size_t i=0; i<node_degree; i++) {
-			total_nodes++;
-			new_node = ct->child(node, i+1);
-			get_tree_average_height(ct, list_height, new_node, height, total_nodes);
-		}
-	}
-	double sum_heights = accumulate(list_height->begin(), list_height->end(), 0);
-	return sum_heights / list_height->size();
-}
-
-template <class type>
-double get_tree_average_height2(type * ct, double* sum_heights, double* count_nodes, size_t node=1, size_t height=0) {
+double get_tree_average_height(type * ct, double* sum_heights, double* count_nodes, size_t node=1, size_t height=0) {
 	size_t node_degree = ct->degree(node);
 	size_t new_node;
 	if (node_degree == 0) {
@@ -99,30 +78,10 @@ double get_tree_average_height2(type * ct, double* sum_heights, double* count_no
 		height++;
 		for (size_t i=0; i<node_degree; i++) {
 			new_node = ct->child(node, i+1);
-			get_tree_average_height2(ct, sum_heights, count_nodes, new_node, height); 
+			get_tree_average_height(ct, sum_heights, count_nodes, new_node, height); 
 		}
 	}
 	return *sum_heights / *count_nodes;
-}
-
-double getTime (void) {
-	double usertime, systime;
-	struct rusage usage;
-
-	getrusage (RUSAGE_SELF, &usage);
-
-	usertime = (double) usage.ru_utime.tv_sec +
-		(double) usage.ru_utime.tv_usec / 1000000.0;
-
-	systime = (double) usage.ru_stime.tv_sec +
-		(double) usage.ru_stime.tv_usec / 1000000.0;
-
-	return (usertime);
-}
-
-void print_index(size_t n){
-	for(size_t i=0; i<n; i++) cout << i%10;
-	cout << endl;
 }
 
 // Function that run along the tree, and apply the methods in each node.
@@ -164,14 +123,12 @@ template<class TYPE>
 void test_child(TYPE * ct) {
 	size_t x;
 	for(size_t j=0; j<ct->degree(1); j++) {
-			//cout << "[Node " << 0 << "] child(" << 1 << ", " << j+1 << "): " << ct->preorder(ct->child(1, j+1)) << endl;
 			cout << "[Node " << 0 << "] child(" << 1 << ", " << j+1 << "): " << ct->child(1, j+1) << endl;
 	}
 
 	for (size_t i=1; i<ct->count_nodes(); i++) {
 		x = ct->tree_select0(i) + 1;
 		for(size_t j=0; j<ct->degree(x); j++) {
-			//cout << "[Node " << i << "] child(" << x << ", " << j+1 << "): " << ct->preorder(ct->child(x, j+1)) << endl;
 			cout << "[Node " << i << "] child(" << x << ", " << j+1 << "): " << ct->child(x, j+1) << endl;
 		}
 	}
@@ -243,7 +200,7 @@ void test_label(TYPE * ct) {
 }
 
 template<class TYPE>
-void test_label_child2(TYPE * ct) {
+void test_label_child(TYPE * ct) {
 	size_t x;
 	uint8_t alpha; 
 	size_t label_child_t;
@@ -266,44 +223,4 @@ void test_label_child2(TYPE * ct) {
 	}
 }
 
-
-template<class TYPE>
-void test_label_reverse(TYPE * ct) {
-	size_t x;
-	for(size_t j=0; j<ct->degree(1); j++) {
-			cout << "[Node " << 0 << "] label(" << 1 << ", " << j+1 << "): " << ct->label_reverse(1, j+1) << endl;
-	}
-
-	for (size_t i=1; i<ct->count_nodes(); i++) {
-		x = ct->tree_select0(i) + 1;
-		for(size_t j=0; j<ct->degree(x); j++) {
-			cout << "[Node " << i << "] label(" << x << ", " << j+1 << "): " << ct->label_reverse(x, j+1) << endl;
-		}
-	}
-}
-
-
-template<class TYPE>
-void test_label_child_reverse(TYPE * ct) {
-	size_t x;
-	char alpha; 
-	size_t label_child_rev;
-	for(size_t j=0; j<ct->degree(1); j++) {
-		alpha = ct->label_reverse(1, j+1);
-		label_child_rev = ct->label_child_reverse(1, alpha);
-		cout << "[Node " << 0 << "] label_child(" << 1 << ", '" << alpha << "'): " 
-			 << label_child_rev << " -> node " << ct->preorder(label_child_rev) << endl;
-
-	}
-
-	for (size_t i=1; i<ct->count_nodes(); i++) {
-		x = ct->tree_select0(i) + 1;
-		for(size_t j=0; j<ct->degree(x); j++) {
-			alpha = ct->label_reverse(x, j+1);
-			label_child_rev = ct->label_child_reverse(x, alpha);
-			cout << "[Node " << i << "] label_child(" << x << ", '" << alpha << "'): "
-		   		 << label_child_rev << " -> node " << ct->preorder(label_child_rev) << endl;
-		}
-	}
-}
 #endif

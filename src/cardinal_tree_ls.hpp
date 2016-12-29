@@ -11,13 +11,13 @@ using namespace sdsl;
 
 typedef unsigned char uchar;
 
-//#define t_sml_blk 1024u
-//#define t_med_deg 2048u
 
 class cardinal_tree_ls {
 	private:
-		int_vector<> *letts; // symbol sequence.
-		bp_support_sada<t_sml_blk, t_med_deg, rank_support_v5<0>, bit_vector::select_0_type> *tree; // tree sequence (DFUDS) 
+		// Symbol sequence.
+		int_vector<> *letts; 
+		// Tree sequence (DFUDS)
+		bp_support_sada<t_sml_blk, t_med_deg, rank_support_v5<0>, bit_vector::select_0_type> *tree;  
 		vector<int> *info; 
 		size_t nodes;
 		bit_vector *b;
@@ -25,8 +25,8 @@ class cardinal_tree_ls {
 		cardinal_tree_ls(int_vector<> *seq_, bit_vector * bp, vector<int> * info_) {
 			nodes = (*bp).size() / 2;
 			letts = seq_;
-			// Inicializar tree BP.
-			tree = new bp_support_sada<t_sml_blk, t_med_deg, rank_support_v5<0>, bit_vector::select_0_type>(bp);  // <- pointer to b
+			// Init tree BP.
+			tree = new bp_support_sada<t_sml_blk, t_med_deg, rank_support_v5<0>, bit_vector::select_0_type>(bp);
 			info = info_;
 			b = bp;
 			letts = seq_;
@@ -131,7 +131,6 @@ class cardinal_tree_ls {
 		// seeking an alpha.
 		int lineal_search(int_vector<> *seq, int left, int right, uint8_t alpha) {
 			for (size_t i=left; i<right+1; i++) {
-				//cout << "i: " << i << " " << "left: " << left << " " << "i-left: " << i-left << " right: " << right << " ";
 				if ((*seq)[i] == alpha) return i;
 			}
 			return -1;
@@ -140,8 +139,8 @@ class cardinal_tree_ls {
 		// binary_label_child: return the position of the child of node x, labeled with alpha.
 		// This do binary search over the sequence of symbols seq.
 		size_t label_child(size_t x, uint8_t alpha) {
-			// symbols_previous_count: # simbolos predecesores. Que en el arreglo de simbolos
-			// corresponde a la posicion donde empiezan los simbolos del nodo x.
+			// symbols_previous_count: # predecessor symbols. In symbols array this represent
+			// position where begin the symbols of node x.
 			size_t position_symbols_begin;
 			if (x == 1) {
 				position_symbols_begin = 0;
@@ -153,8 +152,6 @@ class cardinal_tree_ls {
 
 			i = i-position_symbols_begin+1;
 
-			size_t child_r = child(x, i);
-
 			return child(x, i); 
 		}
 
@@ -162,8 +159,7 @@ class cardinal_tree_ls {
 		// get_binary_size: Return the size of the whole cardinal tree, including bp structure
 		// Here is not use a rank/select structure for symbols, so it's not considered in size.
 		size_t get_size() {
-			cout << size_in_bytes(*tree) << "|" << (*letts).size() << "|";
-			return 0;
+			return size_in_bytes(*tree) + size_in_bytes(*letts);
 		}
 
 		// get_tree_size: Return size in bytes of the structure that support parentheses.
