@@ -15,46 +15,32 @@ using namespace sdsl;
 
 typedef unsigned char uchar;
 
-template <class A_Type> class cardinal_tree 
+template <class seq_type, typename size_type>
+class cardinal_tree 
 {
 	private:
-		A_Type *letts; // symbol sequence.
-		//bp_support_sada<256u, 32u, rank_support_v5<0>, bit_vector::select_0_type> *tree; // tree sequence (DFUDS) 
-		bp_support_sada<t_sml_blk, t_med_deg, rank_support_v5<0>, bit_vector::select_0_type> *tree; // tree sequence (DFUDS) 
-		//bp_support_gg<nearest_neighbour_dictionary<30>, rank_support_v5<0>, bit_vector::select_0_type, 840> *tree;
+		// Symbol sequence.
+		seq_type *letts; 
+		// Tree sequence (DFUDS) 
+		bp_support_sada<t_sml_blk, t_med_deg, rank_support_v5<0>, bit_vector::select_0_type> *tree; 
 		vector<int> *info; 
 		size_t nodes;
-		//string seq;
 		bit_vector *b;
   	public:
-		/*cardinal_tree(string seq_, bit_vector * bp, vector<int> * info_) {
-			nodes = (*bp).size() / 2;
-			letts = new A_Type();
-			//seq = seq_;
-			// Inicializar sequence.
-			construct_im(*letts, seq_, 1); // Revisar "1"
-			// Inicializar tree BP.
-			tree = new bp_support_sada<t_sml_blk, t_med_deg, rank_support_v5<0>, bit_vector::select_0_type>(bp);  // <- pointer to b
-			//tree = new bp_support_gg<nearest_neighbour_dictionary<30>, rank_support_v5<0>, bit_vector::select_0_type, 840>(bp);
-			tree_s1 = new bit_vector::select_1_type(bp);
-			info = info_;
-			b = bp;
-		}*/
-		
 		cardinal_tree(int_vector<> seq_, bit_vector * bp, vector<int> * info_) {
 			nodes = (*bp).size() / 2;
-			letts = new A_Type();
+			letts = new seq_type();
 
 			// Inicializar sequence.
-			construct_im(*letts, seq_, 0); // Revisar "1"
+			construct_im(*letts, seq_, 0); 
 			// Inicializar tree BP.
-			tree = new bp_support_sada<t_sml_blk, t_med_deg, rank_support_v5<0>, bit_vector::select_0_type>(bp);  // <- pointer to b
+			tree = new bp_support_sada<t_sml_blk, t_med_deg, rank_support_v5<0>, bit_vector::select_0_type>(bp); 
 
 			info = info_;
 			b = bp;
 		}
 
-		uint8_t get_symbol(size_t x) {
+		size_type get_symbol(size_t x) {
 			return (*letts)[x];
 		}
 
@@ -99,12 +85,12 @@ template <class A_Type> class cardinal_tree
 
 		// Symbols operations.
 		// label_rank: return count of char s until position x-1 (not inclusive!).
-		size_t label_rank(size_t x, uint8_t s) {
+		size_t label_rank(size_t x, size_type s) {
 			return letts->rank(x, s);
 		}
 
 		// label_select: Return position of x-th char s.
-		size_t label_select(size_t x, uint8_t s) {
+		size_t label_select(size_t x, size_type s) {
 			return letts->select(x, s);
 		}
 
@@ -155,10 +141,9 @@ template <class A_Type> class cardinal_tree
 		}
 
 		// label: return the label of the i-th child of node x. (i=1..I).
-		uint8_t label(size_t x, size_t i) {
-			// menos 1: porque los indices empiezan de 0 y hay 1 simbolo menos que el preorden del nodo.
-			// y menos 1: por el dummy.
-			//return seq[tree_rank1(x - 1) + i + - 1 - 1] ; 
+		size_type label(size_t x, size_t i) {
+			// less 1, because index begin in 0, and there is 1 symbol less than preorder's 
+			// number of the node, and less 1 because the dummy parenthese. 
 			return (*letts)[tree_rank1(x - 1) + i - 2] ; 
 		}
 
@@ -168,7 +153,7 @@ template <class A_Type> class cardinal_tree
 		}
 
 		// label_child: return the position of the child of node x, labeled with alpha.
-		size_t label_child(size_t x, uint8_t alpha) {
+		size_t label_child(size_t x, size_type alpha) {
 			// symbols_previous_count: # simbolos predecesores. Que en el arreglo de simbolos
 			// corresponde a la posicion donde empiezan los simbolos del nodo x.
 			size_t position_symbols_begin;
@@ -180,48 +165,25 @@ template <class A_Type> class cardinal_tree
 			size_t alpha_previous_count; 
 			if (position_symbols_begin == 0) alpha_previous_count = 0;
 			else alpha_previous_count = label_rank(position_symbols_begin, alpha);
-			//cout << "alpha_previous_count: " << alpha_previous_count << " ";
 			// position_next_alpha: posicion de la siguiente aparicion de alpha (alpha buscado)
 			size_t position_alpha = label_select(alpha_previous_count + 1, alpha); 
 			size_t i = position_alpha - position_symbols_begin + 1;
-			//cout << "i: " << i << " node: " << x << " alpha: " << alpha << endl;
 			// restar ambas posiciones, Donde inician los simbolos del nodo y la posición del alpha buscado.
 			return child(x, i); 
-		}
-
-		// label_reverse: return the label of the i-th child of node x. (i=1..I).
-		// symbols are stored in reverse order.
-		char label_reverse(size_t x, size_t i) {
-			return (*letts)[tree_rank1(tree_select0(tree_rank0(x) + 1)) - i - 1];
-		}
-
-		// label_child: return the position of the child of node x, labeled with alpha.
-		// symbols are stored in reverse order.
-		size_t label_child_reverse(size_t x, char alpha) {
-			size_t rank0_x = tree_rank0(x);
-			size_t position_symbols_end = tree_rank1(tree_select0(rank0_x + 1)) - 1; // -1 + 1.
-			size_t position_symbols_begin;
-			if (rank0_x == 0) position_symbols_begin = 0;
-			else position_symbols_begin = tree_rank1(tree_select0(rank0_x)) - 1 - 1; //dummy, conversion a indice.
-			size_t position_alpha;
-			if (position_symbols_begin == 0) position_alpha = label_select(1, alpha);
-			else position_alpha = label_select(label_rank(position_symbols_begin + 1, alpha) + 1, alpha);
-
-			size_t i = position_symbols_end - position_alpha;
-			return child(x, i);
 		}
 
 		// get_size: Return the size of the whole cardinal tree, including bp structure
 		// rank/select structure for symbols.
 		size_t get_size() {
-			//cout << size_in_bytes(*tree_s1) + size_in_bytes(*tree) << "|" << size_in_bytes(*letts) << "|";
-			return letts->size() + tree->size(); 
+			return get_tree_size() + get_letts_size();
 		}
 
+		// get_tree_size: Return size in bytes of the structure that support parentheses.
 		size_t get_tree_size() {
 			return size_in_bytes(*tree);
 		} 
 
+		// get_letts_size: return size in bytes of the symbols.
 		size_t get_letts_size() {
 			return size_in_bytes(*letts);
 		}

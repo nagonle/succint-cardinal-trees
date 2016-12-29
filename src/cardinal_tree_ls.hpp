@@ -18,7 +18,6 @@ class cardinal_tree_ls {
 	private:
 		int_vector<> *letts; // symbol sequence.
 		bp_support_sada<t_sml_blk, t_med_deg, rank_support_v5<0>, bit_vector::select_0_type> *tree; // tree sequence (DFUDS) 
-		bit_vector::select_1_type *tree_s1;
 		vector<int> *info; 
 		size_t nodes;
 		bit_vector *b;
@@ -28,7 +27,6 @@ class cardinal_tree_ls {
 			letts = seq_;
 			// Inicializar tree BP.
 			tree = new bp_support_sada<t_sml_blk, t_med_deg, rank_support_v5<0>, bit_vector::select_0_type>(bp);  // <- pointer to b
-			tree_s1 = new bit_vector::select_1_type(bp);
 			info = info_;
 			b = bp;
 			letts = seq_;
@@ -70,11 +68,6 @@ class cardinal_tree_ls {
 		// tree_select0: return x-th '0'.
 		size_t tree_select0(size_t x) {
 			return tree->select(x);
-		}
-
-		// tree_select1: return x-th '1'.
-		size_t tree_select1(size_t x) {
-			return (*tree_s1)(x);
 		}
 
 		// Cardinal Tree Operations.
@@ -161,8 +154,6 @@ class cardinal_tree_ls {
 			i = i-position_symbols_begin+1;
 
 			size_t child_r = child(x, i);
-			//cout << "child(x,i):"<< child_r;
-			//cout << "bp:"<<get_bp(child_r)<<"bp-1:"<<get_bp(child_r-1);
 
 			return child(x, i); 
 		}
@@ -171,25 +162,20 @@ class cardinal_tree_ls {
 		// get_binary_size: Return the size of the whole cardinal tree, including bp structure
 		// Here is not use a rank/select structure for symbols, so it's not considered in size.
 		size_t get_size() {
-			//cout << "tree (select1) size_in_bytes: " << size_in_bytes(*tree_s1) << endl;
-			//cout << "tree size_in_bytes: " << size_in_bytes(*tree) << endl;
-			//cout << "letts size_in_bytes: " << letts.size() << endl;
-			cout << size_in_bytes(*tree_s1) + size_in_bytes(*tree) << "|" << (*letts).size() << "|";
-			//cout << "*labels: " <<  letts.size() << endl;
-			//cout << "parentheses: " << sizeof(*tree) << endl;
-			//cout << "select_1: " << sizeof(*tree_s1) << endl;
-			//cout << " " << sizeof(*tree_s1) << endl;
-			//return letts.size() + sizeof(*tree) + sizeof(*tree_s1);
+			cout << size_in_bytes(*tree) << "|" << (*letts).size() << "|";
 			return 0;
 		}
 
+		// get_tree_size: Return size in bytes of the structure that support parentheses.
 		size_t get_tree_size() {
-			return size_in_bytes(*tree_s1) + size_in_bytes(*tree);
+			return size_in_bytes(*tree);
 		} 
 
+		// get_letts_size: return size in bytes of the symbols.
 		size_t get_letts_size() {
 			return size_in_bytes(*letts);
 		}
+
 		~cardinal_tree_ls() {delete tree;}
 };
 

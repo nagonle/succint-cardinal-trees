@@ -16,12 +16,35 @@ extern bool check_data(bit_vector *b, int_vector<> *letts, size_t total_nodes);
 //extern bool check_data(bit_vector *b, string& letts, size_t total_nodes);
 
 // vocabulary_size: Return the count of distinc characters.
-extern size_t vocabulary_size(int_vector<> *letts);
 
-// read_letts: read a file that contains symbols and number of nodes.
-extern uint read_letts(char *name_file, uint8_t **letts); 
+template <typename Size_Type>
+extern size_t vocabulary_size(int_vector<> *letts) {
+	size_t count = 0;
+	set<Size_Type> voc;
+	for (size_t i=0; i<letts->size(); i++) {
+		voc.insert((*letts)[i]);
+	}
+	count = voc.size();
+	return count;
+};
+// read_letts: Store the symbols in letts and return the number of nodes.
+template <typename Size_Type, typename Count_Type>
+extern uint64_t read_letts(char *name_file, Size_Type **letts) {
+	Count_Type nodes, symbols;
+	Size_Type tmp;
+	ifstream in;
+	in.open(name_file, ios::in | ios::binary);
+	// Read total nodes
+	in.read((char*)&nodes, sizeof(Count_Type));
+	symbols = nodes - 1;
+	// Read zero separator
+	in.read((char*)&tmp, sizeof(Size_Type));
+	(*letts) = (Size_Type*)malloc(sizeof(Size_Type)*symbols);
+	in.read((char*)*letts, sizeof(Size_Type)*symbols);
+	in.close();
 
-extern uint64_t read_letts32(char *name_file, uint32_t **letts); 
+	return nodes;
+};
 
 // read_bp: store in bp a sequence of bp in file name_file
 extern void read_bp(char* name_file, char **bp, uint nodes);
@@ -42,6 +65,13 @@ extern uint read_size(string name_file);
 extern bool exists(string seq, char c, size_t N); 
 
 // replace_null: Search in seq occurrences for NULL character and replace it for char c.
-extern void replace_null(uint8_t *seq, uint8_t c, size_t N); 
+template <typename Size_Type>
+extern void replace_null(Size_Type *seq, Size_Type c, size_t N) {
+	for (size_t i=0; i<N; i++) {
+		if (seq[i] == 0) {
+			seq[i] = c;
+		}
+	}
+};
 
 #endif

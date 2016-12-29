@@ -12,11 +12,33 @@ using namespace sdsl;
 
 typedef unsigned char uchar;
 
+template <typename T, typename U>
+void sumar(T t, U u) {
+	cout <<  u + t;
+};
+
+
+template <typename T, typename U>
+void saludar(T t, U u){
+	sumar<T, U>(t, u);
+};
+
+
+
+template <class type1, typename type2>
+class myclass {
+	public:
+		type1 edad;
+		type2 peso;
+		myclass(){
+			cout << edad << " " << peso << endl;
+		}
+};
 
 int main(int argc, const char *argv[])
 {
-	vector<size_t> height {2,2,1,3,3,3};
-	cout << *max_element(height.begin(), height.end());
+	saludar(5.2, 2);
+	sumar
 	return 0;
 }
 

@@ -18,69 +18,8 @@ bool check_data(bit_vector *b, int_vector<> *letts, size_t total_nodes) {
 	return false;
 }
 
-size_t vocabulary_size(int_vector<> *letts) {
-	size_t count = 0;
-	set<uint8_t> voc;
-	for (size_t i=0; i<letts->size(); i++) {
-		voc.insert((*letts)[i]);
-	}
-	count = voc.size();
-	return count;
-}
 
-// read_letts: Store the symbols in letts and return the number of nodes.
-uint read_letts(char *name_file, uint8_t **letts) {
-	uint nodes, symbols;
-	char tmp[2];
-	ifstream in;
-	in.open(name_file, ios::in | ios::binary);
-	// Read total nodes
-	in.read((char*)&nodes, sizeof(uint));
-	symbols = nodes - 1;
-	// Read zero separator
-	in.read((char*)&tmp, sizeof(char));
-	(*letts) = (uint8_t*)malloc(symbols);
-	in.read((char*)*letts, sizeof(uint8_t)*symbols);
-	in.close();
-	//(*letts)[symbols] = 0;
 
-	return nodes;
-}
-
-uint64_t read_letts32(char *name_file, uint32_t **letts) {
-	uint nodes, symbols;
-	char tmp[2];
-	ifstream in;
-	in.open(name_file, ios::in | ios::binary);
-	// Read total nodes
-	in.read((char*)&nodes, sizeof(uint64_t));
-	symbols = nodes - 1;
-	// Read zero separator
-	in.read((char*)&tmp, sizeof(uint32_t));
-	(*letts) = (uint32_t*)malloc(symbols);
-	in.read((char*)*letts, sizeof(uint32_t)*symbols);
-	in.close();
-
-	return nodes;
-}
-
-uint read_letts2(char *name_file, char **letts) {
-	uint nodes, symbols;
-	char tmp[2];
-	ifstream in;
-	in.open(name_file, ios::in | ios::binary);
-	// Read total nodes
-	in.read((char*)&nodes, sizeof(uint));
-	symbols = nodes - 1;
-	// Read zero separator
-	in.read((char*)&tmp, sizeof(char));
-	(*letts) = (char*)malloc(symbols+1);
-	in.read(*letts, symbols);
-	in.close();
-	(*letts)[symbols] = 0;
-
-	return nodes;
-}
 
 // read_bp: Store sequence of balanced parentheses in bp.
 void read_bp(char* name_file, char **bp, uint nodes) {
@@ -153,21 +92,4 @@ bool exists(string seq, char c, size_t N) {
 	return false;
 }
 
-// replace_null: Search in seq occurrences for NULL character and replace it for char c.
-void replace_null(uint8_t *seq, uint8_t c, size_t N) {
-	for (size_t i=0; i<N; i++) {
-		if (seq[i] == 0) {
-			seq[i] = c;
-		}
-	}
-	//seq[N] = '\0';
-}
 
-void replace_null2(char *seq, char c, size_t N) {
-	for (size_t i=0; i<N; i++) {
-		if (seq[i] == 0) {
-			seq[i] = c;
-		}
-	}
-	seq[N] = '\0';
-}
