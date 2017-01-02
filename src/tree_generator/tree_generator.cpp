@@ -8,10 +8,10 @@
 #define MARGIN_HEIGHT 15
 #define MAX_HEIGHT 50
 */
-#define MIN_DEGREE 900
+#define MIN_DEGREE 250
 #define MARGIN_DEGREE 100
 #define MIN_HEIGHT 3
-#define MARGIN_HEIGHT 1
+#define MARGIN_HEIGHT 2
 #define MAX_HEIGHT 5
 using namespace std;
 
