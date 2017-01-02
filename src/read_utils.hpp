@@ -23,12 +23,6 @@ extern bool check_balanced(bit_vector *bp);
 // bp_string_to_bit_vector: convert bp sequence in a sequence of 1's and 0's. It store in b.
 extern void bp_string_to_bit_vector(char *bp, bit_vector *b); 
 
-// read_size: read uint from file.
-extern uint read_size(string name_file); 
-
-// exists: return true if char c, appear in string seq. False in other case.
-extern bool exists(string seq, char c, size_t N); 
-
 // replace_null: Search in seq occurrences for NULL character and replace it for char c.
 template <typename Size_Type>
 extern void replace_null(Size_Type *seq, Size_Type c, size_t N) {

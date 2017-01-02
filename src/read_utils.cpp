@@ -53,22 +53,3 @@ void bp_string_to_bit_vector(char *bp, bit_vector *b) {
 	}
 }
 
-// read_size: read uint from file.
-uint read_size(string name_file) {
-	cout << "open file: " << name_file << endl;
-	uint total_nodes;
-	ifstream in(name_file, ios::binary);
-	in.read((char*)&total_nodes, sizeof(total_nodes));
-	in.close();
-	return total_nodes;
-}
-
-// exists: return true if char c, appear in string seq. False in other case.
-bool exists(string seq, char c, size_t N) {
-	for (size_t i=0; i<N; i++) {
-		if (seq[i] == c) return true;
-	}
-	return false;
-}
-
-
