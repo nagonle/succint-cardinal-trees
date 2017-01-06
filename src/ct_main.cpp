@@ -77,16 +77,16 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 		print_output(name, name_letts, check_status, ct.get_bp_count(), ct.get_letts_count(), voc_size, time_random, ct.get_letts_size(), ct.get_tree_size());
 	} else if (strcmp(type_wt, "wt") == 0) {
 		name = "Balanced Wavelet Tree";
-		cardinal_tree<wt_blcd<>, Size_Type> ct(sequence_vector, &b, &info);
+		cardinal_tree<wt_int<>, Size_Type> ct(sequence_vector, &b, &info);
 
-		time_random = tester<cardinal_tree<wt_blcd<>, Size_Type>, Size_Type>(&ct);
+		time_random = tester<cardinal_tree<wt_int<>, Size_Type>, Size_Type>(&ct);
 
 		print_output(name, name_letts, check_status, ct.get_bp_count(), ct.get_letts_count(), voc_size, time_random, ct.get_letts_size(), ct.get_tree_size());
 	} else if (strcmp(type_wt, "wth") == 0) {
 		name = "Huffman Wavelet Tree";
-		cardinal_tree<wt_huff<>, Size_Type> ct(sequence_vector, &b, &info);
+		cardinal_tree<wt_huff_int<>, Size_Type> ct(sequence_vector, &b, &info);
 
-		time_random = tester<cardinal_tree<wt_huff<>, Size_Type>, Size_Type>(&ct);
+		time_random = tester<cardinal_tree<wt_huff_int<>, Size_Type>, Size_Type>(&ct);
 
 		print_output(name, name_letts, check_status, ct.get_bp_count(), ct.get_letts_count(), voc_size, time_random, ct.get_letts_size(), ct.get_tree_size());
 	} else if (strcmp(type_wt, "ls") == 0) {
@@ -111,7 +111,7 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 
 		print_output(name, name_letts, check_status, ct.get_bp_count(), ct.get_letts_count(), voc_size, time_random, ct.get_letts_size(), ct.get_tree_size());
 	} else if (strcmp(type_wt, "describe") == 0) {
-		cardinal_tree<wt_gmr<>, Size_Type> ct(sequence_vector, &b, &info);
+		cardinal_tree<wt_huff_int<>, Size_Type> ct(sequence_vector, &b, &info);
 
 		size_t max_arity = get_max_arity(&ct);
 		double average_arity = get_average_arity(&ct);

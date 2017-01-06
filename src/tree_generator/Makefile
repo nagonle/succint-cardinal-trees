@@ -4,7 +4,7 @@
 #
 
 all:
-	g++ -std=c++11 -Wall tree_generator.cpp -o tree_generator
+	g++ -std=c++11 -g -Wall tree_generator.cpp -o tree_generator
 
 # vim:ft=make
 #
