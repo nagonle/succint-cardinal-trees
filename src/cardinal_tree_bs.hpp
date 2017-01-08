@@ -9,8 +9,8 @@
 using namespace std;
 using namespace sdsl;
 
-typedef unsigned char uchar;
 
+template <typename size_type>
 class cardinal_tree_bs {
 	private:
 		// Symbol sequence.
@@ -120,7 +120,7 @@ class cardinal_tree_bs {
 		}
 
 		// label: return the label of the i-th child of node x. (i=1..I).
-		uint8_t label(size_t x, size_t i) {
+		size_type label(size_t x, size_t i) {
 			// menos 1: porque los indices empiezan de 0 y hay 1 simbolo menos que el preorden del nodo.
 			// y menos 1: por el dummy.
 			return (*letts)[tree_rank1(x - 1) + i + - 2] ; 
@@ -128,7 +128,7 @@ class cardinal_tree_bs {
 
 		// binary_search: do binary search in the string seq, between left and right (inclusive)
 		// seeking an alpha.
-		int binary_search(int_vector<> *seq, int left, int right, uint8_t alpha) {
+		int binary_search(int_vector<> *seq, int left, int right, size_type alpha) {
 			int mid;
 			while (left <= right) { 
 				mid = (left+right)/2; 
@@ -141,7 +141,7 @@ class cardinal_tree_bs {
 
 		// binary_label_child: return the position of the child of node x, labeled with alpha.
 		// This do binary search over the sequence of symbols seq.
-		size_t label_child(size_t x, uint8_t alpha) {
+		size_t label_child(size_t x, size_type alpha) {
 			// symbols_previous_count: # simbolos predecesores. Que en el arreglo de simbolos
 			// corresponde a la posicion donde empiezan los simbolos del nodo x.
 			size_t position_symbols_begin;

@@ -107,16 +107,16 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 		print_output(name, name_letts, check_status, ct.get_bp_count(), ct.get_letts_count(), voc_size, time_random, ct.get_letts_size(), ct.get_tree_size());
 	} else if (strcmp(type_wt, "ls") == 0) {
 		name = "Linear Search";
-		cardinal_tree_ls ct(&sequence_vector, &b, &info);
+		cardinal_tree_ls<Size_Type> ct(&sequence_vector, &b, &info);
 
-		time_random = tester<cardinal_tree_ls, Size_Type>(&ct);
+		time_random = tester<cardinal_tree_ls<Size_Type>, Size_Type>(&ct);
 
 		print_output(name, name_letts, check_status, ct.get_bp_count(), ct.get_letts_count(), voc_size, time_random, ct.get_letts_size(), ct.get_tree_size());
 	} else if (strcmp(type_wt, "bs") == 0) {
 		name = "Binary Search";
-		cardinal_tree_bs ct(&sequence_vector, &b, &info);
+		cardinal_tree_bs<Size_Type> ct(&sequence_vector, &b, &info);
 
-		time_random = tester<cardinal_tree_bs, Size_Type>(&ct);
+		time_random = tester<cardinal_tree_bs<Size_Type>, Size_Type>(&ct);
 
 		print_output(name, name_letts, check_status, ct.get_bp_count(), ct.get_letts_count(), voc_size, time_random, ct.get_letts_size(), ct.get_tree_size());
 	} else if (strcmp(type_wt, "ap") == 0) {
