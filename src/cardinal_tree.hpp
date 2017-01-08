@@ -11,7 +11,6 @@
 using namespace std;
 using namespace sdsl;
 
-typedef unsigned char uchar;
 
 template <class seq_type, typename size_type>
 class cardinal_tree 
