@@ -19,6 +19,7 @@ class cardinal_tree
 	private:
 		// Symbol sequence.
 		seq_type *letts; 
+		string chars;
 		// Tree sequence (DFUDS) 
 		bp_support_sada<t_sml_blk, t_med_deg, rank_support_v5<0>, bit_vector::select_0_type> *tree; 
 		vector<int> *info; 
@@ -31,6 +32,19 @@ class cardinal_tree
 
 			// Init sequence.
 			construct_im(*letts, seq_, 0); 
+			// Init tree BP.
+			tree = new bp_support_sada<t_sml_blk, t_med_deg, rank_support_v5<0>, bit_vector::select_0_type>(bp); 
+
+			info = info_;
+			b = bp;
+		}
+
+		cardinal_tree(string seq_, bit_vector * bp, vector<int> * info_) {
+			nodes = (*bp).size() / 2;
+			letts = new seq_type();
+
+			// Init sequence.
+			construct_im(*letts, seq_, 1); 
 			// Init tree BP.
 			tree = new bp_support_sada<t_sml_blk, t_med_deg, rank_support_v5<0>, bit_vector::select_0_type>(bp); 
 
