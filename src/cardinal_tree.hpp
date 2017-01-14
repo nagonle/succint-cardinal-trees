@@ -6,8 +6,10 @@
 #include <sdsl/wavelet_trees.hpp>
 #include <sdsl/int_vector.hpp>
 
-#define t_sml_blk 1024u
-#define t_med_deg 2048u
+//#define t_sml_blk 1024u
+//#define t_med_deg 2048u
+#define t_sml_blk 4096u
+#define t_med_deg 8192u
 using namespace std;
 using namespace sdsl;
 
