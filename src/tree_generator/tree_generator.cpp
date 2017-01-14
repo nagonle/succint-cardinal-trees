@@ -4,11 +4,11 @@
 #include <algorithm>
 #include <ctime>
 
-#define MIN_DEGREE 900
+#define MIN_DEGREE 300000
 #define MARGIN_DEGREE 100
 #define MIN_HEIGHT 2
-//#define MARGIN_HEIGHT 1
-#define MAX_HEIGHT 4
+#define VOCABULARY_SIZE 10000000
+#define MAX_HEIGHT 3
 using namespace std;
 
 string multiply_str(string a, size_t n) {
@@ -41,11 +41,11 @@ bool belong(vector<uint32_t>* v, uint32_t s) {
 void generate_symbols(vector<uint32_t>* v, size_t N) {
 	uint32_t symbol;
 	srand(time(NULL));
-	size_t t = (MARGIN_DEGREE + MIN_DEGREE + 1) - N;
-	if (t != 0) t = rand() % t + 1;
-	else t = 1;
-	for (size_t i=t; i<N+t; i++) {
-		symbol = (uint32_t)i;
+	for (size_t i=0; i<N; i++) {
+		symbol = (uint32_t) (rand() % (VOCABULARY_SIZE) + 1);
+		while (belong(v, symbol) == true) {
+			symbol = (uint32_t) (rand() % (VOCABULARY_SIZE) + 1);
+		}
 		v->push_back(symbol);
 	}
 	sort(v->begin(), v->end());
