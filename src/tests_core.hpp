@@ -39,7 +39,7 @@ double tester(type *ct, size_t N=100000, bool verbose=false) {
 		ith_child = rand() % degree + 1;
 		if (verbose) cout << "actual_node: " << node << " Preorder(actual_node): " << ct->preorder(node) << " degree(actual_node): " << ct->degree(node); 
 		label = (Size_Type)ct->label(node, ith_child);
-		if (verbose) cout << " New label: " << label << " to int: " << (int)label << endl;
+		if (verbose) cout << " New label: " << label << " to int: " << (int)label << "|" << ct->get_bp(node) << ct->get_bp(node-1) << endl;
 		start_time = chrono::high_resolution_clock::now();
 		next_node = ct->label_child(node, label);
 		end_time = chrono::high_resolution_clock::now();

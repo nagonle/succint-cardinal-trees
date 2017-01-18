@@ -126,6 +126,13 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 		time_random = tester<cardinal_tree<wt_ap<>, Size_Type>, Size_Type>(&ct);
 
 		print_output(name, name_letts, check_status, ct.get_bp_count(), ct.get_letts_count(), voc_size, time_random, ct.get_letts_size(), ct.get_tree_size());
+	} else if (strcmp(type_wt, "ap32") == 0) {
+		name = "Alphabet Partitioning";
+		cardinal_tree<wt_ap<wt_huff_int<>, wt_int<>>, Size_Type> ct(sequence_vector, &b, &info);
+
+		time_random = tester<cardinal_tree<wt_ap<wt_huff_int<>, wt_int<>>, Size_Type>, Size_Type>(&ct);
+
+		print_output(name, name_letts, check_status, ct.get_bp_count(), ct.get_letts_count(), voc_size, time_random, ct.get_letts_size(), ct.get_tree_size());
 	} else if (strcmp(type_wt, "describe") == 0) {
 		cardinal_tree<wt_huff_int<>, Size_Type> ct(sequence_vector, &b, &info);
 
