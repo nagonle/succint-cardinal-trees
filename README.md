@@ -39,4 +39,4 @@ How trees are readed:
 
 - if uint32_t is passed as parameter, total_nodes is readed like a uint64_t, then read 32 bits each time. The first read is the zero, then begins the symbols.
 
-- if not, then the symbols and the 0, are readed like a uint8_t, using 8 bits bits of space each. That means, the first 32 bits of the file contain the number, the next 8 bits contain a zero, and then begin the symbols of the tree, 8 bits each time.
+- if not, then the symbols and the 0, are readed like a uint8_t, using 8 bits of space each. That means, the first 32 bits of the file contain the number, the next 8 bits contain a zero, and then begin the symbols of the tree, 8 bits each time.
