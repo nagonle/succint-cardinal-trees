@@ -150,8 +150,10 @@ class cardinal_tree_bs {
 			}
 			else position_symbols_begin = tree_rank1(x - 1) - 1; 
 			size_t position_symbols_end;
-			position_symbols_end = tree_rank1(tree_select0(tree_rank0(x - 1) + 1)) - 2;
-			size_t i = binary_search(letts, position_symbols_begin, position_symbols_end, alpha);
+			//position_symbols_end = tree_rank1(tree_select0(tree_rank0(x - 1) + 1)) - 2;
+			position_symbols_end = position_symbols_begin + degree(x) - 1;
+			int i = binary_search(letts, position_symbols_begin, position_symbols_end, alpha);
+			if (i == -1) return 0;
 			i = i-position_symbols_begin+1;
 			return child(x, i); 
 		}

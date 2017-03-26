@@ -179,6 +179,10 @@ class cardinal_tree
 			else alpha_previous_count = label_rank(position_symbols_begin, alpha);
 			// position_next_alpha: position of next apparition of searched alpha.
 			size_t position_alpha = label_select(alpha_previous_count + 1, alpha); 
+			int position_symbols_end = position_symbols_begin + degree(x) - 1;
+			if (!(position_alpha >= position_symbols_begin && position_alpha <= position_symbols_end)) {
+				return 0;
+			}
 			// substract both positions, where symbols begin and the position of searched alpha.
 			size_t i = position_alpha - position_symbols_begin + 1;
 			return child(x, i); 
