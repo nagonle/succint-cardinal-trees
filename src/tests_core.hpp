@@ -19,7 +19,7 @@ using namespace sdsl;
 
 // tester: Function that perform test on label_child operation.
 template <class type, typename Size_Type>
-double tester(type *ct, size_t N=100000, bool verbose=false) {
+double tester(type *ct, size_t N=100000, bool verbose=true) {
 	chrono::high_resolution_clock::time_point start_time, end_time;
 	chrono::duration<double> total_time;
 	srand(0);
@@ -39,9 +39,13 @@ double tester(type *ct, size_t N=100000, bool verbose=false) {
 		ith_child = rand() % degree + 1;
 		if (verbose) cout << "actual_node: " << node << " Preorder(actual_node): " << ct->preorder(node) << " degree(actual_node): " << ct->degree(node); 
 		label = (Size_Type)ct->label(node, ith_child);
-		if (verbose) cout << " New label: " << label << " to int: " << (int)label << "|" << ct->get_bp(node) << ct->get_bp(node-1) << endl;
+		if (verbose) cout << " New label: " << label << " to int: " << (int)label << "|" << ct->get_bp(node) << "|" << ct->get_bp(node-1) << endl;
 		start_time = chrono::high_resolution_clock::now();
 		next_node = ct->label_child(node, label);
+		if (next_node == 0) {
+			degree = 0;
+			continue;
+		}
 		end_time = chrono::high_resolution_clock::now();
 		total_time += end_time - start_time;
 
