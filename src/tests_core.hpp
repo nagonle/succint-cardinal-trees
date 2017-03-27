@@ -19,7 +19,7 @@ using namespace sdsl;
 
 // tester: Function that perform test on label_child operation.
 template <class type, typename Size_Type>
-double tester(type *ct, size_t N=100000, bool verbose=true) {
+double tester(type *ct, size_t N=100000, bool verbose=false) {
 	chrono::high_resolution_clock::time_point start_time, end_time;
 	chrono::duration<double> total_time;
 	srand(0);

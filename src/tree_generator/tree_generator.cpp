@@ -4,12 +4,22 @@
 #include <algorithm>
 #include <ctime>
 
-#define MIN_DEGREE 300000
+#define MIN_DEGREE 20
 #define MARGIN_DEGREE 100
 #define MIN_HEIGHT 2
-#define VOCABULARY_SIZE 10000000
+#define VOCABULARY_SIZE 120
 #define MAX_HEIGHT 3
 using namespace std;
+
+/*
+struct specs {
+	int MIN_DEGREE = 300000;
+	int MARGIN_DEGREE = 100;
+	int MIN_HEIGHT = 2;
+	int VOCABULARY_SIZE = 10000000;
+	int MAX_HEIGHT = 3;
+}
+*/
 
 string multiply_str(string a, size_t n) {
 	string b = "";
@@ -97,7 +107,7 @@ void random_tree_to_file(size_t current_height, ofstream& out_file, ofstream& le
 		vector<uint32_t> symbols;
 		generate_symbols(&symbols, degree);
 		for (auto i=symbols.begin(); i<symbols.end(); i++) letts_file.write((char*)&(*i), sizeof(uint32_t));
-		
+
 		for (size_t i=0; i<degree; i++) {
 			random_tree_to_file(current_height, out_file, letts_file, tree_info, tree_info_current_height);
 		}
@@ -116,7 +126,8 @@ void check_files(string bp, string letts) {
 	letts_f.read((char*)&aux, sizeof(uint32_t));
 	uint32_t* array = (uint32_t*)malloc(sizeof(uint32_t)*total_symbols);
 	letts_f.read((char*)array, sizeof(uint32_t)*total_symbols);
-	for (size_t i=0; i<10; i++) cout << array[i] << "|"; cout << endl;
+	for (size_t i=0; i<10; i++) cout << array[i] << "|";
+	cout << endl;
 	letts_f.close();
 
 	bp_f.open(bp);
@@ -149,11 +160,11 @@ int main(int argc, const char *argv[])
 	check_files("random_tree.ascii", "random_tree.letts");
 	cout << "Tree info" << endl;
 	cout << "max arity: " << tree_info.max_arity << endl;
-	cout << "average arity: " << (double) tree_info.average_arity / tree_info.count_nodes_no_leaf << endl; 
+	cout << "average arity: " << (double) tree_info.average_arity / tree_info.count_nodes_no_leaf << endl;
 	cout << "max height: " << tree_info.max_height << endl;
-	cout << "average height: " << (double) tree_info.average_height / tree_info.count_leaf << endl; 
+	cout << "average height: " << (double) tree_info.average_height / tree_info.count_leaf << endl;
 
-	cout << tree_info.max_arity << "|" << (double) tree_info.average_arity / tree_info.count_nodes_no_leaf 
+	cout << tree_info.max_arity << "|" << (double) tree_info.average_arity / tree_info.count_nodes_no_leaf
 			<< "|" << tree_info.max_height << "|" << (double) tree_info.average_height / tree_info.count_leaf << endl;
 	return 0;
 }

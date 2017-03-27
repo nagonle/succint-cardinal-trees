@@ -65,14 +65,13 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 	// Check consistency on data.
 	string check_status;
 	if (check_data(&b, &sequence_vector, total_nodes) == true) check_status = "OK";
-	else check_status = "FAILED"; 
-	cout << "Check Status: " << check_status << endl;
+	else check_status = "FAILED";
 
 	// Construct Cardinal Tree and run tests.
 	if (strcmp(type_wt, "gmr") == 0) {
 		name = "Golynski";
 		cardinal_tree<wt_gmr<>, Size_Type> ct(sequence_vector, &b, &info);
-		
+
 		time_random = tester<cardinal_tree<wt_gmr<>, Size_Type>, Size_Type>(&ct);
 
 		print_output(name, name_letts, check_status, ct.get_bp_count(), ct.get_letts_count(), voc_size, time_random, ct.get_letts_size(), ct.get_tree_size());
@@ -137,20 +136,37 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 	} else if (strcmp(type_wt, "describe") == 0) {
 		cardinal_tree<wt_huff_int<>, Size_Type> ct(sequence_vector, &b, &info);
 
-		/*
 		size_t max_arity = get_max_arity(&ct);
-		cout << "max_arity: " << max_arity << endl;
 		double average_arity = get_average_arity(&ct);
-		cout << "average arity:"<<average_arity<<endl;
-		*/
-		cout<<"calculating tree height:"<<endl;
-		size_t tree_height = get_tree_height(&ct);
-		cout<<"tree_height:"<<tree_height<<endl;
+		int count = 0;
+		size_t tree_height = get_tree_height(&ct, count);
 		double sum_heights = 0, count_nodes = 0;
 		double tree_average_height = get_tree_average_height(&ct, &sum_heights, &count_nodes);
-		cout<<"tree_average_height:"<<tree_average_height<<endl;
 
 		print_dataset_info(max_arity, average_arity, tree_height, tree_average_height);
+	} else if (strcmp(type_wt, "arity") == 0) {
+		cardinal_tree<wt_huff_int<>, Size_Type> ct(sequence_vector, &b, &info);
+		double average_arity = get_average_arity(&ct);
+		cout << "Average arity: " << average_arity << endl;
+	} else if (strcmp(type_wt, "max_arity") == 0) {
+		cardinal_tree<wt_huff_int<>, Size_Type> ct(sequence_vector, &b, &info);
+		double max_arity = get_max_arity(&ct);
+		cout << "Max arity: " << max_arity << endl;
+	} else if (strcmp(type_wt, "height") == 0) {
+		cardinal_tree<wt_huff_int<>, Size_Type> ct(sequence_vector, &b, &info);
+		double sum_heights = 0, count_nodes = 0;
+		double average_height = get_tree_average_height(&ct, &sum_heights, &count_nodes);
+		cout << "Average height: " << average_height << endl;
+	} else if (strcmp(type_wt, "max_height") == 0) {
+		cardinal_tree<wt_huff_int<>, Size_Type> ct(sequence_vector, &b, &info);
+		int count = 0;
+		double max_height = get_tree_height(&ct, count);
+		cout << "Max height: " << max_height << endl;
+		cout << "Count: " << count << endl;
+	} else if (strcmp(type_wt, "nodes") == 0) {
+		cout << "Total nodes: " << total_nodes << endl;
+	} else if (strcmp(type_wt, "symbols") == 0) {
+		cout << "Total symbols: " << total_symbols << endl;
 	}
 };
 
@@ -181,7 +197,7 @@ int main(int argc, char *argv[]) {
 	} else {
 		print_usage();
 	}
-	if (argc == 4) { 
+	if (argc == 4) {
 		if (strcmp(argv[3], "uint32_t") == 0) {
 			process_data<uint32_t, uint64_t>(name_bp, name_letts, type_wt);
 		}
