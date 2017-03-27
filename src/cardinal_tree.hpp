@@ -6,10 +6,10 @@
 #include <sdsl/wavelet_trees.hpp>
 #include <sdsl/int_vector.hpp>
 
-//#define t_sml_blk 1024u
-//#define t_med_deg 2048u
-#define t_sml_blk 4096u
-#define t_med_deg 8192u
+//#define t_sml_blk 4096u
+//#define t_med_deg 8192u
+#define t_sml_blk 8192u
+#define t_med_deg 16384u
 using namespace std;
 using namespace sdsl;
 
@@ -181,6 +181,7 @@ class cardinal_tree
 			size_t position_alpha = label_select(alpha_previous_count + 1, alpha); 
 			int position_symbols_end = position_symbols_begin + degree(x) - 1;
 			if (!(position_alpha >= position_symbols_begin && position_alpha <= position_symbols_end)) {
+				cout << "Fail|";
 				return 0;
 			}
 			// substract both positions, where symbols begin and the position of searched alpha.

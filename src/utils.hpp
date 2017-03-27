@@ -33,7 +33,7 @@ template <class type>
 double get_average_arity(type * ct) {
 	size_t x;
 	size_t degree_node = ct->degree(1);
-	double sum_arity = degree_node; 
+	double sum_arity = degree_node;
 	size_t nodes = 1;
 	for (size_t i=1; i<ct->count_nodes(); i++) {
 		x = ct->tree_select0(i) + 1;
@@ -49,7 +49,8 @@ double get_average_arity(type * ct) {
 
 // tree_height: return the max tree height.
 template <class type>
-size_t get_tree_height(type * ct, size_t node=1, size_t height=0) {
+size_t get_tree_height(type * ct, int& count,size_t node=1, size_t height=0) {
+	count++;
 	vector <size_t> height_list;
 	size_t node_degree = ct->degree(node);
 	size_t new_node;
@@ -58,7 +59,7 @@ size_t get_tree_height(type * ct, size_t node=1, size_t height=0) {
 		height++;
 		for (size_t i=0; i<node_degree; i++) {
 			new_node = ct->child(node, i+1);
-			height_list.push_back(get_tree_height(ct, new_node, height));
+			height_list.push_back(get_tree_height(ct, count, new_node, height));
 		}
 	}
 	return *max_element(height_list.begin(), height_list.end());
@@ -78,7 +79,7 @@ double get_tree_average_height(type * ct, double* sum_heights, double* count_nod
 		height++;
 		for (size_t i=0; i<node_degree; i++) {
 			new_node = ct->child(node, i+1);
-			get_tree_average_height(ct, sum_heights, count_nodes, new_node, height); 
+			get_tree_average_height(ct, sum_heights, count_nodes, new_node, height);
 		}
 	}
 	return *sum_heights / *count_nodes;
@@ -105,7 +106,7 @@ void brute_test_degree(bit_vector *ct) {
 		} else {
 			degree++;
 		}
-		
+
 	}
 }
 
@@ -202,12 +203,12 @@ void test_label(TYPE * ct) {
 template<class TYPE>
 void test_label_child(TYPE * ct) {
 	size_t x;
-	uint8_t alpha; 
+	uint8_t alpha;
 	size_t label_child_t;
 	for(size_t j=0; j<ct->degree(1); j++) {
 		alpha = ct->label(1, j+1);
 		label_child_t = ct->label_child(1, alpha);
-		cout << "[Node " << 0 << "] label_child(" << 1 << ", '" << alpha << "'): " 
+		cout << "[Node " << 0 << "] label_child(" << 1 << ", '" << alpha << "'): "
 				<< label_child_t << "--> node " << ct->preorder(label_child_t)<< endl;
 
 	}
@@ -217,7 +218,7 @@ void test_label_child(TYPE * ct) {
 		for(size_t j=0; j<ct->degree(x); j++) {
 			alpha = ct->label(x, j+1);
 			label_child_t = ct->label_child(x, alpha);
-			cout << "[Node " << i << "] label_child(" << x << ", '" << alpha << "'): " 
+			cout << "[Node " << i << "] label_child(" << x << ", '" << alpha << "'): "
 				<< label_child_t << "--> node " << ct->preorder(label_child_t) << endl;
 		}
 	}
