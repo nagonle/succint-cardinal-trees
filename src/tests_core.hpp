@@ -19,7 +19,7 @@ using namespace sdsl;
 
 // tester: Function that perform test on label_child operation.
 template <class type, typename Size_Type>
-double tester(type *ct, size_t N=100000, bool verbose=false) {
+double tester(type *ct, size_t N=100000, bool verbose=false, bool DEBUG=true) {
 	chrono::high_resolution_clock::time_point start_time, end_time;
 	chrono::duration<double> total_time;
 	srand(0);
@@ -40,15 +40,25 @@ double tester(type *ct, size_t N=100000, bool verbose=false) {
 		if (verbose) cout << "actual_node: " << node << " Preorder(actual_node): " << ct->preorder(node) << " degree(actual_node): " << ct->degree(node); 
 		label = (Size_Type)ct->label(node, ith_child);
 		if (verbose) cout << " New label: " << label << " to int: " << (int)label << "|" << ct->get_bp(node) << "|" << ct->get_bp(node-1) << endl;
+		if (DEBUG == true) {
+			if ((node != 1) && (ct->get_bp(node-1) != ')')) {
+				cout << "[ERROR] ";
+				cout << "node: " << node <<  ", bp: " << ct->get_bp(node) << endl;
+				cout << "[ERROR] ";
+				cout << "node-1: " << node-1 <<  ", bp: " << ct->get_bp(node-1) << endl;
+			} else if ((node == 1) && (ct->get_bp(node-1) != '(')) {
+				cout << "[ERROR] node: " << node << " bp: " << ct->get_bp(node) << endl;
+				cout << "[ERROR] node-1: " << node-1 << " bp: " << ct->get_bp(node-1) << endl;
+			}
+		}
 		start_time = chrono::high_resolution_clock::now();
 		next_node = ct->label_child(node, label);
-		if (next_node == 0) {
-			degree = 0;
-			continue;
-		}
 		end_time = chrono::high_resolution_clock::now();
 		total_time += end_time - start_time;
 
+		if (next_node == 0) {
+			cout << "[ERROR] label_child: " << next_node << endl;
+		}
 		node = next_node;
 		degree = ct->degree(node);
 

@@ -20,13 +20,24 @@ using namespace std;
 using namespace sdsl;
 
 void print_output(string name_structure, char *name_dataset, string check_status, size_t bp_count, size_t letts_count, size_t voc_size, double time_random, size_t letts_size, size_t tree_size) {
-	cout << name_dataset << "|" << check_status << "|" << name_structure << "|" << bp_count << "|" << letts_count << "|" << voc_size << "|" << (double)letts_size/letts_count << "|" << (double)tree_size/(letts_count+1) << "|" << (double)((letts_size+tree_size)*8)/(letts_count+1) << "|" << time_random << endl;
+	cout << name_dataset << "|" << check_status << "|" << name_structure << "|" << bp_count << "|" << letts_count << "|" << voc_size << "|" << (double)letts_size*8/letts_count << "|" << (double)tree_size*8/(letts_count+1) << "|" << (double)((letts_size+tree_size)*8)/(letts_count+1) << "|" << time_random << endl;
 }
 
 void print_dataset_info(size_t max_arity, double average_arity, size_t max_height, double average_height) {
 	cout << fixed;
 	cout << setprecision(2);
 	cout << max_arity << "|" << average_arity << "|" << max_height << "|" << average_height << endl;
+}
+
+void check_tolerance(bit_vector * bp, uint64_t NODES) {
+		bp_support_sada<> tree(bp);
+		cout << "rank: " << tree.rank(2*NODES - 1) << endl;
+		cout << "find_close(0): " << tree.find_close(0) << endl;
+		cout << "total nodes: " << NODES << endl << endl;
+		bp_support_sada<256u, 32u, rank_support_v5<1>, bit_vector::select_0_type> bps(bp); 
+		cout << "rank: " << bps.rank(2*NODES - 1) << endl;
+		cout << "find_close(0): " << bps.find_close(0) << endl;
+		cout << "total nodes: " << NODES << endl;
 }
 
 template <typename Size_Type, typename Count_Type>
@@ -55,6 +66,16 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 	bit_vector b(total_nodes*2);
 	bp_string_to_bit_vector(bp, &b);
 
+	// #####################
+	// # CHECK BP SADAKANE #
+	// #####################
+	bool CHECK=false;
+	if (CHECK == true) {
+		check_tolerance(&b, total_nodes);
+		return ;
+	}
+	// ############# END CHECK ############# //
+
 	// Create Cardinal Tree.
 	vector<int> info;
 	info.push_back(42);
@@ -66,6 +87,8 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 	string check_status;
 	if (check_data(&b, &sequence_vector, total_nodes) == true) check_status = "OK";
 	else check_status = "FAILED";
+	//cout << "END CHECK: " << check_status << endl;
+	//return ;
 
 	// Construct Cardinal Tree and run tests.
 	if (strcmp(type_wt, "gmr") == 0) {
@@ -167,7 +190,7 @@ void process_data(char *name_bp, char *name_letts, char *type_wt) {
 		cout << "Total nodes: " << total_nodes << endl;
 	} else if (strcmp(type_wt, "symbols") == 0) {
 		cout << "Total symbols: " << total_symbols << endl;
-	}
+	} 
 };
 
 

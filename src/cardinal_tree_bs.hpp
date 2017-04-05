@@ -16,7 +16,7 @@ class cardinal_tree_bs {
 		// Symbol sequence.
 		int_vector<> *letts; 
 		// Tree sequence (DFUDS). 
-		bp_support_sada<t_sml_blk, t_med_deg, rank_support_v5<0>, bit_vector::select_0_type> *tree; 
+		bp_support_sada<256, 32, rank_support_v5<1>, bit_vector::select_0_type> *tree; 
 		vector<int> *info; 
 		size_t nodes;
 		bit_vector *b;
@@ -25,7 +25,7 @@ class cardinal_tree_bs {
 			nodes = (*bp).size() / 2;
 
 			// Init tree BP.
-			tree = new bp_support_sada<t_sml_blk, t_med_deg, rank_support_v5<0>, bit_vector::select_0_type>(bp);
+			tree = new bp_support_sada<256, 32, rank_support_v5<1>, bit_vector::select_0_type>(bp); 
 			info = info_;
 			b = bp;
 			letts = seq_;
@@ -56,12 +56,12 @@ class cardinal_tree_bs {
 		// Tree operations.
 		// tree_rank0: return #0's until n inclusive.
 		size_t tree_rank0(size_t x) {
-			return tree->rank(x);
+			return x - tree->rank(x) + 1;
 		}
 
 		// tree_rank1: return #1's until n inclusive.
 		size_t tree_rank1(size_t x) {
-			return x - tree->rank(x) + 1;
+			return tree->rank(x);
 		}
 		
 		// tree_select0: return x-th '0'.
@@ -128,8 +128,8 @@ class cardinal_tree_bs {
 
 		// binary_search: do binary search in the string seq, between left and right (inclusive)
 		// seeking an alpha.
-		int binary_search(int_vector<> *seq, int left, int right, size_type alpha) {
-			int mid;
+		int binary_search(int_vector<> *seq, size_t left, size_t right, size_type alpha) {
+			size_t mid;
 			while (left <= right) { 
 				mid = (left+right)/2; 
 				if ((*seq)[mid] < alpha) left = mid+1; 
@@ -138,6 +138,21 @@ class cardinal_tree_bs {
 			}
 			return -1;
 		}
+
+		/*
+		int linear_search(int_vector<> *seq, int left, int right, size_type alpha) {
+			for (size_t i=left; i<right; i++) {
+				if (!((*seq)[i] < (*seq)[i+1])){
+				   	cout << "[ERROR] CHAR Are Not SORTED" << endl;
+					cout << "seq[i]: " << (*seq)[i] << " .seq[i+1]: " << (*seq)[i+1] << endl;
+				}
+			}
+			for (size_t i=left; i<right+1; i++) {
+				if ((*seq)[i] == alpha) return i;
+			}
+			return -1;
+		}
+		*/
 
 		// binary_label_child: return the position of the child of node x, labeled with alpha.
 		// This do binary search over the sequence of symbols seq.
@@ -150,10 +165,18 @@ class cardinal_tree_bs {
 			}
 			else position_symbols_begin = tree_rank1(x - 1) - 1; 
 			size_t position_symbols_end;
-			//position_symbols_end = tree_rank1(tree_select0(tree_rank0(x - 1) + 1)) - 2;
 			position_symbols_end = position_symbols_begin + degree(x) - 1;
 			int i = binary_search(letts, position_symbols_begin, position_symbols_end, alpha);
-			if (i == -1) return 0;
+			/*
+			if (i == -1) {
+				cout << "[ERROR] binary search. Symbol Not Found" << endl;
+				cout << "begin: " << position_symbols_begin << ". end: " << position_symbols_end << endl;
+				i = linear_search(letts, position_symbols_begin, position_symbols_end, alpha);
+				if (i != -1) cout << "[LINEAR SEARCH] chars found!" << endl;
+				cout << "i: " << i << endl;
+				return 0;
+			}
+			*/
 			i = i-position_symbols_begin+1;
 			return child(x, i); 
 		}

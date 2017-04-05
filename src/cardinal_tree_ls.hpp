@@ -16,7 +16,8 @@ class cardinal_tree_ls {
 		// Symbol sequence.
 		int_vector<> *letts; 
 		// Tree sequence (DFUDS)
-		bp_support_sada<t_sml_blk, t_med_deg, rank_support_v5<0>, bit_vector::select_0_type> *tree;  
+		bp_support_sada<256, 32, rank_support_v5<1>, bit_vector::select_0_type> *tree;  
+		//bp_support_sada<> *tree;  
 		vector<int> *info; 
 		size_t nodes;
 		bit_vector *b;
@@ -25,7 +26,8 @@ class cardinal_tree_ls {
 			nodes = (*bp).size() / 2;
 			letts = seq_;
 			// Init tree BP.
-			tree = new bp_support_sada<t_sml_blk, t_med_deg, rank_support_v5<0>, bit_vector::select_0_type>(bp);
+			tree = new bp_support_sada<256, 32, rank_support_v5<1>, bit_vector::select_0_type>(bp);
+			//tree = new bp_support_sada<>(bp);
 			info = info_;
 			b = bp;
 			letts = seq_;
@@ -56,12 +58,12 @@ class cardinal_tree_ls {
 		// Tree operations.
 		// tree_rank0: return #0's until n inclusive.
 		size_t tree_rank0(size_t x) {
-			return tree->rank(x);
+			return x - tree->rank(x) + 1;
 		}
 
 		// tree_rank1: return #1's until n inclusive.
 		size_t tree_rank1(size_t x) {
-			return x - tree->rank(x) + 1;
+			return tree->rank(x);
 		}
 		
 		// tree_select0: return x-th '0'.

@@ -84,7 +84,33 @@ double get_tree_average_height(type * ct, double* sum_heights, double* count_nod
 	}
 	return *sum_heights / *count_nodes;
 }
+/*
+template <typename char_type>
+void write_vector_to_file(vector<char_type>& v, string name_file) {
+	ofstream file_p(name_file);
+	// default increasing sort.
+	std::sort(v.begin(), v.end());
+	for (auto i=v.begin(); i<v.end(); i++) {
+		file_p.write((*i), char_type);
+	}
+}
 
+
+template <class type>
+void sort_alphabet(type * ct, int& count,size_t node=1, string name_file) {
+	vector <size_t> chars;
+	size_t node_degree = ct->degree(node);
+	size_t new_node;
+	if (node_degree == 0) return;
+	else {
+		for (size_t i=0; i<node_degree; i++) {
+			if (node == 1) chars.push_back(0);
+			else chars.push_back(ct->label_child(node, i));
+		}
+		//new_node = ct->child(node, i+1);
+	}
+}
+*/
 // Function that run along the tree, and apply the methods in each node.
 template<class TYPE>
 void test_degree(TYPE * ct) {

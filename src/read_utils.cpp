@@ -8,12 +8,13 @@
 using namespace std;
 using namespace sdsl;
 
-typedef unsigned char uchar;
 
 // Check all data read.
 bool check_data(bit_vector *b, int_vector<> *letts, size_t total_nodes) {
 	size_t total_symbols = total_nodes - 1;
 	bool balanced = check_balanced(b);
+	if (balanced == false) cout << "Not Balanced" << endl;
+   	if (!(b->size() == total_nodes * 2 && letts->size() == total_symbols)) cout << "Problem with sizes";
 	if (balanced == true && b->size() == total_nodes * 2 && letts->size() == total_symbols) return true;
 	return false;
 }
@@ -38,10 +39,14 @@ bool check_balanced(bit_vector *bp) {
 		if ((*bp)[i] == 1u) bp_stack.push('1');
 		else
 			if (bp_stack.empty() == false) bp_stack.pop();
-			else return false;
+			else {
+				cout << "there are more close parentheses than open parentheses." << " [pos]" << i << endl;
+				return false;
+			}
 	}
 
 	if (bp_stack.empty() == true) return true;
+	cout << "There are more open parentheses than close parentheses" << endl;
 	return false;
 }
 

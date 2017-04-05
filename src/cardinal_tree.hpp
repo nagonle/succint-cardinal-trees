@@ -8,8 +8,8 @@
 
 //#define t_sml_blk 4096u
 //#define t_med_deg 8192u
-#define t_sml_blk 8192u
-#define t_med_deg 16384u
+//#define t_sml_blk 131072u
+//#define t_med_deg 32768u
 using namespace std;
 using namespace sdsl;
 
@@ -22,7 +22,8 @@ class cardinal_tree
 		seq_type *letts; 
 		string chars;
 		// Tree sequence (DFUDS) 
-		bp_support_sada<t_sml_blk, t_med_deg, rank_support_v5<0>, bit_vector::select_0_type> *tree; 
+		bp_support_sada<256, 32, rank_support_v5<1>, bit_vector::select_0_type> *tree; 
+		//bp_support_sada<> * tree;
 		vector<int> *info; 
 		size_t nodes;
 		bit_vector *b;
@@ -34,7 +35,8 @@ class cardinal_tree
 			// Init sequence.
 			construct_im(*letts, seq_, 0); 
 			// Init tree BP.
-			tree = new bp_support_sada<t_sml_blk, t_med_deg, rank_support_v5<0>, bit_vector::select_0_type>(bp); 
+			tree = new bp_support_sada<256, 32, rank_support_v5<1>, bit_vector::select_0_type>(bp); 
+			//tree = new bp_support_sada<>(bp); 
 
 			info = info_;
 			b = bp;
@@ -47,7 +49,8 @@ class cardinal_tree
 			// Init sequence.
 			construct_im(*letts, seq_, 1); 
 			// Init tree BP.
-			tree = new bp_support_sada<t_sml_blk, t_med_deg, rank_support_v5<0>, bit_vector::select_0_type>(bp); 
+			tree = new bp_support_sada<256, 32, rank_support_v5<1>, bit_vector::select_0_type>(bp); 
+			//tree = new bp_support_sada<>(bp); 
 
 			info = info_;
 			b = bp;
@@ -83,12 +86,13 @@ class cardinal_tree
 		// Tree operations.
 		// tree_rank0: return #0's until n inclusive.
 		size_t tree_rank0(size_t x) {
-			return tree->rank(x);
+			return x - tree->rank(x) + 1;
 		}
 
 		// tree_rank1: return #1's until n inclusive.
         size_t tree_rank1(size_t x) {
-        	return x - tree->rank(x) + 1;
+        	//return x - tree->rank(x) + 1;
+			return tree->rank(x);
         }
 
 		// tree_select0: return x-th '0'.
