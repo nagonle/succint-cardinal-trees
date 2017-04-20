@@ -167,16 +167,11 @@ class cardinal_tree_bs {
 			size_t position_symbols_end;
 			position_symbols_end = position_symbols_begin + degree(x) - 1;
 			int i = binary_search(letts, position_symbols_begin, position_symbols_end, alpha);
-			/*
 			if (i == -1) {
-				cout << "[ERROR] binary search. Symbol Not Found" << endl;
-				cout << "begin: " << position_symbols_begin << ". end: " << position_symbols_end << endl;
-				i = linear_search(letts, position_symbols_begin, position_symbols_end, alpha);
-				if (i != -1) cout << "[LINEAR SEARCH] chars found!" << endl;
-				cout << "i: " << i << endl;
+				cout << "Binary Search Error" << endl;
 				return 0;
 			}
-			*/
+
 			i = i-position_symbols_begin+1;
 			return child(x, i); 
 		}
