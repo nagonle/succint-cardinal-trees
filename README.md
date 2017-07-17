@@ -1,7 +1,7 @@
 Implementation of Compact Cardinal Trees
 ========================================
 
-In this code, it is proposes a implementation of compact cardinal trees.
+In this code, it is proposes an implementation of compact cardinal trees.
 
 Dependencies:
 ============
